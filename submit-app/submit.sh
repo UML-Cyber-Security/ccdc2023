@@ -9,7 +9,7 @@ FILE="$1"
 PATH_=$(pwd)/"$FILE"
 
 # check if file exists
-if ! [ -f "$PATH_" ]; then
+if ! [[ -f "$PATH_" || -d "$PATH_" ]]; then
 	echo "File not found."
 	echo "Usage: submit [FILE]"
 	exit
@@ -24,8 +24,9 @@ fi
 
 # check file type
 file_type=$(file --mime-type -b $PATH_)
-if ! [[ "$file_type" == *"pdf"* || "$file_type" == *"text"* ]]; then
-	echo "Only pdf and text files can be submitted. Please try again."
+if ! [[ "$file_type" == *"x-7z-compressed"* || "$file_type" == *"text"* 
+	|| "$file_type" == *"directory"* ]]; then
+	echo "Only pdf, 7z, or directories  can be submitted. Please try again."
 	exit
 fi
 
@@ -36,7 +37,7 @@ else
 	mv "$PATH_" /submissions
 	chmod 600 /submissions/"$FILE"
 	# make sure file was moved properly
-	if [ -f /submissions/"$FILE" ]; then
+	if [[ -f /submissions/"$FILE" || -d /submissions/"$FILE" ]]; then
 		# set color variable
 		green='\033[0;32m'
 		clear='\033[0m'
