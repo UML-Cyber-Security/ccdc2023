@@ -24,7 +24,7 @@ fi
 
 # check file type
 file_type=$(file --mime-type -b $PATH_)
-if ! [[ "$file_type" == *"x-7z-compressed"* || "$file_type" == *"text"* 
+if ! [[ "$file_type" == *"x-7z-compressed"* || "$file_type" == *"pdf"* 
 	|| "$file_type" == *"directory"* ]]; then
 	echo "Only pdf, 7z, or directories  can be submitted. Please try again."
 	exit
