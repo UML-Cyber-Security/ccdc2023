@@ -43,7 +43,7 @@ The mount namespace isolates process mounts or filesystems
 #### **User namespace**
 The user namespace allows for user mapping, where a process can thing it is running as root, however in the root namespace it is running as some other non-root user
 
-#### **The others are **
+#### The others are
 UTC namespace: Not mentioned but allows the host and domain name to appear different for different processes 
 IPC namespace: This one allows each process to have isolated IPC resources (semaphores message queues etc.)
 Network Namespace: allows isolated processes to have their own separate network stack resources (IP, routing firewall etc…) 
@@ -73,11 +73,17 @@ Dockerfile, this is a basic file which instructs docker how to build the images,
 
 ### Commands
 `docker images`: lists images on the machine
-`docker image rm <image name/ID>`: removes the image 
-`docker ps`: lists running containers 
+
+`docker image rm <image name/ID>`: removes the image
+
+`docker ps`: lists running containers
+
 `docker ps -a`: lists all containers on the machine
+
 `docker run <options> <name of image>`: creates a new instance and runs the new container
+
 `docker stop <Name/ID>`: stops a running containers
+
 `docker start <name/ID>`: starts a stopped container
 
 In addition to those commands there are many others where you can create new networks, volumes and more.
@@ -128,7 +134,7 @@ The docker demon and platform itself is quite secure, the main challenge is conf
 
 `--read-only` this makes the whole file system of the container read only, you can make portions writable if an app needs it with the -tmpfs or --mount --type=tmpfs --target=path flag, Note on windows and mac the -tmpfs flag does not work
 
-`--cap-drop=all1 this will drop all kernel capabilities that a container has, this is recommended action on all containers 
+`--cap-drop=all` this will drop all kernel capabilities that a container has, this is recommended action on all containers 
 
 `--cap-add=cap1 cap2 cap…` this will add kernel capabilities to a container 
 
