@@ -2,5 +2,5 @@
 
 | Date | Presenter | Description |
 | --- | --- | --- |
-| July 01 | Matt Harper | Docker |
-| July 08 | Andrew A | Kubernetes |
+| AugustA 01 | Matt Harper | [Docker](./Docker/README.md) |
+| August 08 | Andrew A | [Kubernetes](./Kubernetes/README.md) |

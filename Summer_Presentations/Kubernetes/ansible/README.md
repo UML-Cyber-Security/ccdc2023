@@ -1,8 +1,9 @@
 # k8s Setup
 
-Setup a k8s demo cluster.
+Setup a k8s demo cluster
 
-Note:
+## NOTE
+- Not using for presentation (written last year ccdc 2022).
 - Requires at least 2 vCPU
 
 ## Run the following commands in order
