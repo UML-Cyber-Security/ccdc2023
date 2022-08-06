@@ -3,7 +3,7 @@
 ## Creating
 ### Create the Cluster
 ```bash
-k3d cluster create presentation -p 8080:8080
+k3d cluster create presentation -p 30000:30000
 ```
 
 ### Adding Nodes
