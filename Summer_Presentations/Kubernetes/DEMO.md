@@ -31,7 +31,7 @@ kubectl create -f pod.yaml
 ```
 
 ```bash
-kubectl delete pod -n demo demo-nginx
+kubectl delete pod -n demo demo-nginx && rm pod.yaml
 ```
 
 ## DEPLOYMENTS
@@ -83,7 +83,7 @@ spec:
 ```
 
 ```bash
-kubectl edit deployment demo-webapp-deployment -n demodemo
+kubectl edit deployment demo-webapp-deployment -n demo
 ```
 Change color
 
@@ -91,7 +91,7 @@ Change color
 apiVersion: v1
 kind: Pod
 metadata:
-  name: demo-pink-webapp
+  name: demo-red-webapp
   namespace: demo
   labels:
     app: webapp
@@ -103,7 +103,7 @@ spec:
     - containerPort: 80
     env:
     - name: COLOR
-      value: pink
+      value: red
 ```
 Show load balancing
 
@@ -147,6 +147,7 @@ metadata:
   namespace: demo
 data:
   KEY: VALUE
+  FOO: BAR
 ```
 
 ```yaml
@@ -196,7 +197,6 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: dashboard
-  namespace: demo
 roleRef:
   kind: Role
   name: dashboard-role
@@ -236,7 +236,7 @@ spec:
   ports:
     - port: 8080
       targetPort: 8080
-      nodePort: 30000
+      nodePort: 30001
 ```
 
 ## NETWORK POLICY
