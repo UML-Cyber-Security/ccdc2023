@@ -3,7 +3,7 @@ data "xenorchestra_pool" "pool" {
 }
 
 data "xenorchestra_template" "vm_template" {
-  name_label = "TEMPLATE_NAME"
+  name_label = "Ubuntu #1 - 18.04"
 }
 
 data "xenorchestra_sr" "sr" {

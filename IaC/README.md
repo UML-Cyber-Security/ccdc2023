@@ -33,7 +33,3 @@ https://registry.terraform.io/providers/terra-farm/xenorchestra/latest/docs
 ### General Guide ###
 
 https://xen-orchestra.com/blog/virtops1-xen-orchestra-terraform-provider/
-
-## TF ENV
-Tool used to automatically pull the specified Terraform version.
-[Github](https://github.com/tfutils/tfenv)

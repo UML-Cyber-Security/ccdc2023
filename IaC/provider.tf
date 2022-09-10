@@ -7,7 +7,9 @@ terraform {
   required_providers {
     xenorchestra = {
       source = "terra-farm/xenorchestra"
-      version = "~> 0.3.0"
+      version = "0.23.3"
     }
   }
 }
+
+provider "xenorchestra" {}
