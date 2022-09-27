@@ -6,3 +6,5 @@
 .terraform.tfstate.lock.info
 .terraform.tfstate
 .xoa
+
+.env

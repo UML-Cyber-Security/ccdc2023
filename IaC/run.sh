@@ -1,2 +1,2 @@
-eval $(cat .xoa)
+eval $(cat .env)
 terraform init 
