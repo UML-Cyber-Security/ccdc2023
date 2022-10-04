@@ -29,15 +29,6 @@ data "xenorchestra_network" "net" {
   name_label = "Pool-wide network associated with eth0"
 }
 
-# resource "xenorchestra_cloud_config" "bar" {
-#   name = "cloud config name"
-#   # Template the cloudinit if needed
-#   template = templatefile("cloud_config.tftpl", {
-#     hostname = "TEST"
-#     domain = "ccdc.cyber.uml.edu"
-#   })
-# }
-
 resource "xenorchestra_vm" "bar" {
     memory_max = 4096
     cpus  = 1
