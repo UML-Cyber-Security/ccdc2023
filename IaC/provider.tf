@@ -2,15 +2,18 @@
 terraform {
   required_providers {
     xenorchestra = {
-      source = "terra-farm/xenorchestra"
-      version = "~> 0.3.0"
+      source  = "terra-farm/xenorchestra"
+      version = "0.23.3"
     }
   }
 }
 
 # Configure the XenServer Provider
 provider "xenorchestra" {
-  url      = "wss://xoa-admin.cyber.uml.edu"  # Or set XOA_URL environment variable
-  username = "Justin"                         # Or set XOA_USER environment variable
-  password = ""                      # Or set XOA_PASSWORD environment variable
+  url      = "wss://xoa-ccdc.cyber.uml.edu" # Or set XOA_URL environment variable
+  insecure = true
+
+  # Set XOA_USER and set XOA_PASSWORD environment variable
+  # username = ""
+  # password = ""
 }

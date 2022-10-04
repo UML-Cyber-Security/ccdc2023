@@ -1,11 +1,3 @@
-# data "xenorchestra_pool" "pool" {
-#   name_label = "cybersec-ccdc2023"
-# } 
-
-# data "xenorchestra_template" "vm_template" {
-#   name_label = "CCDC-Ubuntu-22.04"
-# }
-
 # data "xenorchestra_sr" "sr" {
 #   name_label = "Local storage"
 #   pool_id = data.xenorchestra_pool.pool.id
@@ -18,11 +10,11 @@
 
 # Content of the terraform files
 data "xenorchestra_pool" "pool" {
-    name_label = "cybersec-ccdc2023"
+  name_label = "cybersec-ccdc2023"
 }
 
 data "xenorchestra_template" "template" {
-    name_label = "CCDC-Ubuntu-22.04"
+  name_label = "CCDC-Ubuntu-22.04"
 }
 
 data "xenorchestra_network" "net" {
@@ -30,27 +22,27 @@ data "xenorchestra_network" "net" {
 }
 
 resource "xenorchestra_vm" "bar" {
-    memory_max = 4096
-    cpus  = 1
-    # cloud_config = xenorchestra_cloud_config.bar.template
-    name_label = "TEST"
-    name_description = "A VM created via Terraform"
-    template = data.xenorchestra_template.template.id
+  memory_max = 4096
+  cpus       = 1
+  # cloud_config = xenorchestra_cloud_config.bar.template
+  name_label       = "TEST"
+  name_description = "A VM created via Terraform"
+  template         = data.xenorchestra_template.template.id
 
-    # Prefer to run the VM on the primary pool instance
-    affinity_host = data.xenorchestra_pool.pool.master
-    network {
-      network_id = data.xenorchestra_network.net.id
-    }
+  # Prefer to run the VM on the primary pool instance
+  affinity_host = data.xenorchestra_pool.pool.master
+  network {
+    network_id = data.xenorchestra_network.net.id
+  }
 
-    disk {
-      sr_id = "7f469400-4a2b-5624-cf62-61e522e50ea1"
-      name_label = "TEST_imavo"
-      size = 10000 
-    }
+  disk {
+    sr_id      = "7f469400-4a2b-5624-cf62-61e522e50ea1"
+    name_label = "TEST_imavo"
+    size       = 10000
+  }
 
-    // Override the default create timeout from 5 mins to 20.
-    timeouts {
-      create = "20m"
-    }
+  // Override the default create timeout from 5 mins to 20.
+  timeouts {
+    create = "20m"
+  }
 }
