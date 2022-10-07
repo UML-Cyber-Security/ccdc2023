@@ -8,7 +8,7 @@
 
 ### Create Ansible Inventory ### 
 
-Create a yaml file with the following content:
+Create an inventory.yaml file with the following content:
 
 ```yaml 
 [ccdc_uml_infra]
@@ -19,7 +19,7 @@ Create a yaml file with the following content:
 
 
 View hosts with: 
-``` ansible all --list-hosts ```
+``` ansible all -i inventory.yaml --list-hosts ```
 
 ### Step 2: Setup Machines ###
 
@@ -29,7 +29,7 @@ Add public key to authorized_keys on all machines
 
 
 Test connection to machines: 
-``` ansible all -m ping ```
+```ansible all -u user -m ping -i inventory.yaml```
 
 ### Step 3: Run Playbook ###
 
@@ -47,7 +47,7 @@ Create a playbook with the following content:
 ``` 
 
 You can run the playbook like this:
-``` ansible-playbook -i inventory.yaml playbook.yml ```
+``` ansible-playbook -u user -i inventory.yaml example_playbook.yml ```
 
 ## Useful Resources ## 
 
