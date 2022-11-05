@@ -3,8 +3,6 @@ version: "3.9"
 services:
   attacker:
     build: ./Attacker
-    ports:
-      - 2022:22 
     networks:
       - p1-publicNetwork
       
