@@ -18,6 +18,7 @@ ip6tables -P OUTPUT ACCEPT
 ip6tables -P FORWARD ACCEPT
 
 # Flush 
+## IPv4
 iptables -F INPUT
 iptables -F OUTPUT
 iptables -F DOCKER-USER
@@ -25,12 +26,34 @@ iptables -t mangle -F PREROUTING
 
 iptables -F DOCKER-LOG
 iptables -F SSH-INITIAL-LOG
+iptables -F ICMP-FLOOD
+iptables -F GLUSTER
 iptables -t mangle -F INVALID-LOG
 
+## IPv6 
+ip6tables -F INPUT
+ip6tables -F OUTPUT
+ip6tables -F DOCKER-USER
+ip6tables -t mangle -F PREROUTING
+
+ip6tables -F DOCKER-LOG
+ip6tables -F SSH-INITIAL-LOG
+ip6tables -F ICMP-FLOOD
+ip6tables -F GLUSTER
+ip6tables -t mangle -F INVALID-LOG
+
 # Remove User Chains 
+## IPv4
 iptables -X DOCKER-LOG
 iptables -X SSH-INITIAL-LOG
+ip6tables -X ICMP-FLOOD
+ip6tables -X GLUSTER
 iptables -t mangle -X INVALID-LOG
 
-
+## IPv6
+ip6tables -X DOCKER-LOG
+ip6tables -X SSH-INITIAL-LOG
+ip6tables -X ICMP-FLOOD
+ip6tables -X GLUSTER
+ip6tables -t mangle -X INVALID-LOG
 
