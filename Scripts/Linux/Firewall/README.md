@@ -1,3 +1,15 @@
+# TODO
+* Gluster (May be a manual process)
+  * https://docs.gluster.org/en/main/Install-Guide/Configure/
+  * That or know all the ports that will be used and free those.
+    * https://docs.gluster.org/en/latest/Administrator-Guide/Setting-Up-Clients/#installing-the-gluster-native-client
+    * sudo iptables -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 24007:24008 -j ACCEPT
+    * sudo iptables -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 49152:49156 -j ACCEPT
+
+* Check if UFW appends or inserts 
+  * Depending on this people can use UFW more than IPTables
+
+
 # IPTables (IPv4)
 ## Logging
 Currently there is additional logging for SSH-INITAL connections and INVALID packets (indicative of a scan)
@@ -28,7 +40,7 @@ iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
 ## Outbound 
 Allowing all ICMP for now. We can limit a little later.
-Check and go over other capablities we want or need
+Check and go over other capabilities we want or need
 
 # IP6Tables (IPv6)
 Currently I Just set the default policies to drop, is IPv6 necessary?
