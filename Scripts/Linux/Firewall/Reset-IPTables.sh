@@ -27,7 +27,8 @@ iptables -t mangle -F PREROUTING
 iptables -F DOCKER-LOG
 iptables -F SSH-INITIAL-LOG
 iptables -F ICMP-FLOOD
-iptables -F GLUSTER
+iptables -F GLUSTER-IN
+iptables -F GLUSTER-OUT
 iptables -t mangle -F INVALID-LOG
 
 ## IPv6 
@@ -39,21 +40,24 @@ ip6tables -t mangle -F PREROUTING
 ip6tables -F DOCKER-LOG
 ip6tables -F SSH-INITIAL-LOG
 ip6tables -F ICMP-FLOOD
-ip6tables -F GLUSTER
+ip6tables -F GLUSTER-IN
+ip6tables -F GLUSTER-OUT
 ip6tables -t mangle -F INVALID-LOG
 
 # Remove User Chains 
 ## IPv4
 iptables -X DOCKER-LOG
 iptables -X SSH-INITIAL-LOG
-ip6tables -X ICMP-FLOOD
-ip6tables -X GLUSTER
+iptables -X ICMP-FLOOD
+iptables -X GLUSTER-IN
+iptables -X GLUSTER-OUT
 iptables -t mangle -X INVALID-LOG
 
 ## IPv6
 ip6tables -X DOCKER-LOG
 ip6tables -X SSH-INITIAL-LOG
 ip6tables -X ICMP-FLOOD
-ip6tables -X GLUSTER
+ip6tables -X GLUSTER-IN
+ip6tables -X GLUSTER-OUT
 ip6tables -t mangle -X INVALID-LOG
 

@@ -5,6 +5,18 @@
 * Make it easier to add peers (File of IPs)
   * Sudo privlage 
 * Firewall Integration Script.
+  * Two, intial one and one that limits the ingress based on Ports
+  * Logs are at /var/log/glusterfs
+  * Config in /etc/glusterfs
+
+
+## Limit Brick Ports used 
+Located in glusterd.vol, min is defined by base-port and max is defined by max-port, only change max port. (Firewall autoconfigured to support 10 bricks).
+
+Default Min = 49152
+Default Max = 60999
+
+
 
 ## Installation and Setup
 
@@ -62,7 +74,7 @@ sudo gluster volume create Demo1 replica 3 192.168.0.62:/gluster/brick 192.168.0
 We need to start the volume and authorize hosts to access the volume 
 ```sh
 # Start the volume 
-sudo gluster volume <Volume-Name>
+sudo gluster volume  start <Volume-Name>
 
 # Authorize Hosts 
 sudo gluster volume set <Volume-Name> auth.allow <hostname>

@@ -25,14 +25,14 @@ Currently there is additional logging for SSH-INITAL connections,  INVALID packe
   * "IPTables-ICMP-FLOOD: " 
 
 ## Gluster
-A Gluster Chain (GLUSTER) is created with the necissary rules to support 10 blocks on a system. (Arbitrarily Chosen)
+Gluster Chains (GLUSTER-IN, GLUSTER-OUT) are created with the necessary rules to support 10 blocks on a system. (Arbitrarily Chosen)
 We can enable the Gluster rules by adding the chain to the INPUT and OUTPUT chains.
 
 We provide no conditions as this is just a patchwork rule, so this will exist on all systems and can be enabled with 2 lines.
 ```sh
 # Add Gluster to the system
-iptables -j GLUSTER
-ip6tables -j GLUSTER
+iptables -A INPUT -j GLUSTER-IN
+ip6tables -A OUTPUT -j GLUSTER-OUT
 ```
 
 Note: It will be necessary to limit the range to that which is provided.
@@ -40,8 +40,10 @@ Note: It will be necessary to limit the range to that which is provided.
 
 Not that the other alternative is we accept all traffic from a source address. As currently we accept all traffic to and from a Gluster port.
 
+The Output Chain for gluster is bloated as it may have to handle outbound requests and outbound responses... 
+
 ## INPUT Chain
-allow source port connections of 80 and 443 to allow web responces? Rather then (allow established?)
+allow source port connections of 80 and 443 to allow web responses? Rather then (allow established?)
 ### HTTPS
 ```
 ### HTTPS -- needed for all?

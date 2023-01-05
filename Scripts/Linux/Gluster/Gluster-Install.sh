@@ -14,5 +14,23 @@ apt-get install glusterfs-server -y
 systemctl enable glusterd
 systemctl start glusterd
 
+# Limit number of bricks 
+sed -i 's/.*base-port.*/   option base-port 49152/g' /etc/glusterfs/glusterd.vol
+sed -i 's/.*max-port.*/    option max-port 49162/g' /etc/glusterfs/glusterd.vol
+
+GLUSTER=$(iptables -nvL | grep "GLUSTER" | wc -l ) 
+echo $GLUSTER
+if [ "$GLUSTER" != 0 ]
+  then echo "Appending Gluster Firewall Chains to the Firewall"
+  iptables -A INPUT -j GLUSTER-IN
+  iptables -A OUTPUT -j GLUSTER-OUT
+  ip6tables -A INPUT -j GLUSTER-IN
+  ip6tables -A OUTPUT -j GLUSTER-OUT
+fi
+
+
 # Create Gluster directory and Inital Brick
-mkdir -p /gluster/brick
+echo "Creating Gluster Directory in Root Directory for Brick Dirs"
+mkdir -p /gluster/brick1
+
+systemctl restart glusterd
