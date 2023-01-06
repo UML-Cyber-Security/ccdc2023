@@ -1,0 +1,94 @@
+---
+
+- hosts: all
+  become: true
+  
+
+  pre_tasks:
+      
+    - name: Updating the repositories
+      ansible.builtin.package:
+        update_cache: true
+
+    - name: Making sure  wazuh is up and running on the remote machine 
+      ansible.builtin.service:
+        name: wazuh-indexer.service
+        name: wazuh-dashboard.service
+        name: wazuh-manager.service
+        name: filebeat
+        state: started
+          
+  tasks:
+    
+
+    - name: Adding the suricata repo to the machine
+      ansible.builtin.apt_repository:
+        repo: ppa:oisf/suricata-stable
+        state: present
+
+    - name: Installing Suricata
+      ansible.builtin.package:
+        name: suricata
+
+    - name: Downloading emerging threats rule sets
+      ansible.builtin.get_url:
+        url: https://rules.emergingthreats.net/open/suricata-6.0.9/emerging.rules.tar.gz
+        dest: /tmp/
+
+    - name: Extracting the downloaded rule sets 
+      ansible.builtin.unarchive:
+        src: /tmp/emerging.rules.tar.gz
+        dest: /tmp/
+        remote_src: true
+    - name: Copying local.rules file to /etc/suricata/rules
+      ansible.builtin.copy:
+        src: local.rules
+        dest: /etc/suricata/rules
+
+    - name: Moving the rules directory to /etc/suricata/rules
+      ansible.builtin.copy:
+        src: /tmp/rules/
+        dest: /etc/suricata/rules/
+        mode: '640'
+        remote_src: true
+
+    - name: Running suricata 
+      ansible.builtin.command: suricata-update 
+      ansible.builtin.command: suricata-update enable-source  malsilo/win-malware
+      register: result
+      
+    - name: Output of Suricata update and Enabling an additional source
+      ansible.builtin.debug:
+        var: result
+ 
+    - name: Testing Suricata
+      ansible.builtin.command: suricata -T -c /etc/suricata/suricata.yaml -v 
+      register: output
+      
+    - name: Output of testing Suricata
+      ansible.builtin.debug:
+        var: output
+
+
+    - name: Integrating Wazuh and Suricata 
+      ansible.builtin.blockinfile:
+        path: /var/ossec/etc/ossec.conf
+        block: |4
+              <localfile>
+                <log_format>json</log_format>
+                <location>/var/log/suricata/eve.json</location>
+              </localfile>
+        insertafter: '<!-- Files to monitor' 
+        state: present
+      tags: changeblock
+
+  post_tasks:
+      
+    - name: Restarting Wazuh dashboard, indexer, manager, filebeat and Suricata
+      ansible.builtin.service:
+        name: wazuh-indexer.service
+        name: wazuh-dashboard.service
+        name: wazuh-manager.service
+        name: filebeat
+        state: restarted      
+      tags: restartservices            
