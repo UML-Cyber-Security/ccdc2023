@@ -180,13 +180,13 @@ ip6tables -t mangle -I PREROUTING -m conntrack --ctstate INVALID -j INVALID-LOG
 # ----------------------------------------------------------------------------------------------------------------------------
 
 # ------------------------------------------------ INPUT chain ---------------------------------------------------------------
-####### INBOUND
-#### IPv4
-# Allows incoming connections from established outbound connections -- Do we want this
-iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
+
+####### Loop back interface Impersonation (Would we like to log this?
+#### IPv4
+iptables -A INPUT -s 127.0.0.1/8 ! -i lo -j DROP
 #### IPv6
-ip6tables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+ip6tables -A INPUT -s ::1/128 ! -i lo -j DROP
 
 ####### SSH
 #### IPv4
@@ -201,6 +201,13 @@ ip6tables -I INPUT -m conntrack -p tcp --dport 22 --ctstate NEW -j SSH-INITIAL-L
 # Accept SSH Connections
 ip6tables -A INPUT -p tcp --dport 22 -j ACCEPT
 
+####### INBOUND
+#### IPv4
+# Allows incoming connections from established outbound connections -- Do we want this
+iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+#### IPv6
+ip6tables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
 ####### DNS
 #### IPv4
@@ -220,13 +227,6 @@ ip6tables -A INPUT -p udp --dport 53 -j ACCEPT
 iptables -A INPUT -i lo -j ACCEPT
 #### IPv6
 ip6tables -A INPUT -i lo -j ACCEPT
-
-####### Loop back interface Impersonation (Would we like to log this?
-#### IPv4
-iptables -A INPUT -s 127.0.0.1/8 ! -i lo -j DROP
-#### IPv6
-ip6tables -A INPUT -s ::1/128 ! -i lo -j DROP
-
 
 ####### HTTPS -- needed for all? --- 
 #### IPv4
@@ -456,6 +456,11 @@ ip6tables -P FORWARD DROP
 # ----------------------------------------------- Docker Specific IPTables rules  --------------------------------------------
 if ! [[ -x "$(command -v docker)" ]]; then
     echo "Docker is not installed, exiting script!"
+    echo "Saving Firewall Rules"
+    if [ -f "/etc/debian_version" ]; 
+      then iptables-save /etc/iptables/rules.v4
+      else iptables-save /etc/sysconfig/iptables
+    fi 
     exit
 fi
 # Create Docker Chain
@@ -474,4 +479,17 @@ iptables -A DOCKER-LOG -j RETURN
 # only logs traffic being forwarded to the container
 # To limit the amount of logs generated we can limit it to new connections
 iptables -I DOCKER-USER  -o docker0 -j DOCKER-LOG
+# ----------------------------------------------------------------------------------------------------------------------------
+
+
+# ------------------------------------------- Save Firewall Rules ------------------------------------------------------------
+echo "Saving Firewall Rules"
+if [ -f "/etc/debian_version" ]; 
+    then
+      iptables-save > /etc/iptables/rules.v4
+      ip6tables-save > /etc/iptables/rules.v6
+    else
+      iptables-save > /etc/sysconfig/iptables
+      ip6tables-save > /etc/sysconfig/iptables
+fi 
 # ----------------------------------------------------------------------------------------------------------------------------
