@@ -8,20 +8,6 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-# Get distribution, read 5th line from /etc/...-release
-DISTRO=$(sed -n '5p' /etc/*-release)
-
-# Simple check to see if firewalld is installed and running
-FIREWALLD=$(service firewalld status)
-
-# Check OS (RHEL may use firewalld) -- Placeholder
-#if [[ ("$DISTRO" != "NAME=\"Ubuntu\"") || ("$FIREWALLD" == "firewalld: unrecognized service") ]]; then
-  #  echo "Manual Intervention Required"
- #   exit
-#fi
-
-
-
 # The following will be IPTable Commands
 
 # -------------------------------------- Reset Chains chain ---------------------------------------------------------
@@ -138,21 +124,18 @@ ip6tables -A ICMP-FLOOD -j ACCEPT
 ### IN
 # Gluster Management Ports -- they mention TCP and UDP
 iptables -A GLUSTER-IN -p tcp -m multiport --dport 24007,24008 -m conntrack --ctstate NEW -j ACCEPT
-iptables -A GLUSTER-IN -p udp -m multiport --dport 24007,24008 -m conntrack --ctstate NEW -j ACCEPT 
-# Gluster Brick Ports (May be randomized in range after gluster 10
+# Gluster Brick Ports (May be randomized in range after gluster 10)
 iptables -A GLUSTER-IN -p tcp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT
 # iptables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
 
 ### OUT --> Pain we may have to deal with traffic to a gluster management port, or from a gluster port (responce)
 iptables -A GLUSTER-OUT -p tcp -m multiport --sport 24007,24008 -j ACCEPT
-iptables -A GLUSTER-OUT -p udp -m multiport --sport 24007,24008 -j ACCEPT 
-# Gluster Brick Ports (May be randomized in range after gluster 10
+# Gluster Brick Ports (May be randomized in range after gluster 10)
 iptables -A GLUSTER-OUT -p tcp -m multiport --sport 49152:49162 -j ACCEPT
 # iptables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
 # Gluster Management Ports -- they mention TCP and UDP
 iptables -A GLUSTER-OUT -p tcp -m multiport --dport 24007,24008 -j ACCEPT
-iptables -A GLUSTER-OUT -p udp -m multiport --dport 24007,24008 -j ACCEPT 
-# Gluster Brick Ports (May be randomized in range after gluster 10
+# Gluster Brick Ports (May be randomized in range after gluster 10)
 iptables -A GLUSTER-OUT -p tcp -m multiport --dport 49152:49251 -j ACCEPT
 # iptables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
 
@@ -161,22 +144,20 @@ iptables -A GLUSTER-OUT -p tcp -m multiport --dport 49152:49251 -j ACCEPT
 ### IN
 # Gluster Management Ports -- they mention TCP and UDP
 ip6tables -A GLUSTER-IN -p tcp -m multiport --dport 24007:24008 -m conntrack --ctstate NEW -j ACCEPT
-ip6tables -A GLUSTER-IN -p udp -m multiport --dport 24007:24008 -m conntrack --ctstate NEW -j ACCEPT 
 # Gluster Brick Ports (May be randomized in range after gluster 10
 ip6tables -A GLUSTER-IN -p tcp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT
 # ip6tables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
 
 ### OUT --> Pain we may have to deal with traffic to a gluster management port, or from a gluster port (responce)
-ip6tables -A GLUSTER-OUT -p tcp -m multiport --sport 24007:24008 -m conntrack --ctstate NEW -j ACCEPT
-ip6tables -A GLUSTER-OUT -p udp -m multiport --sport 24007:24008 -m conntrack --ctstate NEW -j ACCEPT 
+# Gluster Management Ports -- they mention TCP and UDP
+ip6tables -A GLUSTER-OUT -p tcp -m multiport --sport 24007:24008 -j ACCEPT
 # Gluster Brick Ports (May be randomized in range after gluster 10
-ip6tables -A GLUSTER-OUT -p tcp -m multiport --sport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT
+ip6tables -A GLUSTER-OUT -p tcp -m multiport --sport 49152:49162 -j ACCEPT
 # ip6tables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
 # Gluster Management Ports -- they mention TCP and UDP
-ip6tables -A GLUSTER-OUT -p tcp -m multiport --dport 24007:24008 -m conntrack --ctstate NEW -j ACCEPT
-ip6tables -A GLUSTER-OUT -p udp -m multiport --dport 24007:24008 -m conntrack --ctstate NEW -j ACCEPT 
+ip6tables -A GLUSTER-OUT -p tcp -m multiport --dport 24007:24008 -j ACCEPT
 # Gluster Brick Ports (May be randomized in range after gluster 10
-ip6tables -A GLUSTER-OUT -p tcp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT
+ip6tables -A GLUSTER-OUT -p tcp -m multiport --dport 49152:49162 -j ACCEPT
 # ip6tables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
 
 
@@ -199,6 +180,14 @@ ip6tables -t mangle -I PREROUTING -m conntrack --ctstate INVALID -j INVALID-LOG
 # ----------------------------------------------------------------------------------------------------------------------------
 
 # ------------------------------------------------ INPUT chain ---------------------------------------------------------------
+####### INBOUND
+#### IPv4
+# Allows incoming connections from established outbound connections -- Do we want this
+iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+#### IPv6
+ip6tables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
 ####### SSH
 #### IPv4
 # Log any SSH connection attempt
@@ -314,14 +303,6 @@ ip6tables -A INPUT -p icmpv6 --icmpv6-type 152 -j ACCEPT
 ip6tables -A INPUT -p icmpv6 --icmpv6-type 153 -j ACCEPT
 
 
-
-####### INBOUND
-#### IPv4
-# Allows incoming connections from established outbound connections -- Do we want this
-iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-
-#### IPv6
-ip6tables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 # ----------------------------------------------------------------------------------------------------------------------------
 
 

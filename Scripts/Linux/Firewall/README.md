@@ -1,16 +1,9 @@
 # TODO
-* Gluster (May be a manual process)
-  * https://docs.gluster.org/en/main/Install-Guide/Configure/
-  * That or know all the ports that will be used and free those.
-    * https://docs.gluster.org/en/latest/Administrator-Guide/Setting-Up-Clients/#installing-the-gluster-native-client
-    * sudo iptables -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 24007:24008 -j ACCEPT
-    * sudo iptables -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 49152:49156 -j ACCEPT\
-    * Script to add and setup additional blocking rules based on known paramiters (Subnet range)
-
 * Check if UFW appends or inserts 
   * Depending on this people can use UFW more than IPTables
 * Simplify rules using modules like -- multiport 
   * Specify range of --dport with 1:10 [1,10]
+* Save rules to cfg
 
 
 # IPTables (IPv4)

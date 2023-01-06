@@ -34,7 +34,7 @@ iptables -t mangle -F INVALID-LOG
 ## IPv6 
 ip6tables -F INPUT
 ip6tables -F OUTPUT
-ip6tables -F DOCKER-USER
+# ip6tables -F DOCKER-USER
 ip6tables -t mangle -F PREROUTING
 
 ip6tables -F DOCKER-LOG
