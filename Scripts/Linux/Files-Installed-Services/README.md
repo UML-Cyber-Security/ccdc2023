@@ -1,10 +1,24 @@
 # TODO 
 1. SSH CONFIG
-   1. Would we like MFA too? That seems fun
-   2. Install Pull SSH
+   1. Would we like MFA too? That seems fun 
 2. PAM CONFIG
    1. What do we want with this
 3. Create a "super-Script" to manage the individual deployment 
+4. Seperate out Chron ALLOW
+   1. Add Admin user (we create) to chron allow list
+   2. 
+
+# Necessary (In order?)
+* Installed-Service-RM
+* ECHO-SSH
+  * How will this affect ansible this would restart the ssh service, put that off till later?
+* Sysctl-AA
+* set-permisions
+* Echo-Auditd-Install
+
+# Optional (Run before AuditD)
+* Cron 
+* ldap
 
 # NOTICE
 Auditd should be configured LAST otherwise we will generate a large amount of noise.
