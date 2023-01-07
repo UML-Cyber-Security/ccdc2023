@@ -462,7 +462,7 @@ if ! [[ -x "$(command -v docker)" ]]; then
       else iptables-save /etc/sysconfig/iptables
     fi 
     exit
-fi
+fi 
 # Create Docker Chain
 iptables -N DOCKER-LOG
 

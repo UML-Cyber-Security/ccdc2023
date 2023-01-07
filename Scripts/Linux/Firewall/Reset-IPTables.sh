@@ -60,7 +60,7 @@ ip6tables -X ICMP-FLOOD
 ip6tables -X GLUSTER-IN
 ip6tables -X GLUSTER-OUT
 ip6tables -t mangle -X INVALID-LOG
-
+ 
 
 echo "Removing Firewall Rules"
 if [ -f "/etc/debian_version" ]; 

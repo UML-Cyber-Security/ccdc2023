@@ -7,7 +7,7 @@ if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit
 fi
-
+ 
 # If there exists this file, it is a debian based system. Use APT
 if [ -f "/etc/debian_version" ]; 
     then 
