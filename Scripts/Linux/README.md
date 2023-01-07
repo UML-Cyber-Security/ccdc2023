@@ -1,4 +1,4 @@
-# TOD)
+# TODO
 * YUM
 * DNF
 * APT
