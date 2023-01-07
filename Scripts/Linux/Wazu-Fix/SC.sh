@@ -205,10 +205,10 @@ Ensure journald is configured to compress large log files.	-
 Ensure journald is configured to write logfiles to persistent disk.	-
 
 
-# perm Log
+# perm Log-- need to check
 Ensure permissions on all logfiles are configured.	find /var/log -type f -ls
 
-# Cron
+# Cron -- this is already implemented 
 Ensure permissions on all logfiles are configured.	find /var/log -type f -ls
 Ensure cron daemon is enabled and running.	systemctl is-enabled cron,systemctl status cron
 Ensure permissions on /etc/crontab are configured.	stat /etc/crontab
@@ -226,6 +226,8 @@ Ensure at is restricted to authorized users.	-
 Ensure sudo is installed.	dpkg -s sudo
 Ensure sudo commands use pty.	-
 Ensure sudo log file exists.	-
+
+# This or some of it may be done -- memeory 
 Ensure permissions on /etc/ssh/sshd_config are configured.	stat /etc/ssh/sshd_config
 Ensure permissions on SSH private host key files are configured.	stat /etc/ssh/ssh_host_rsa_key,stat /etc/ssh/ssh_host_ecdsa_key,stat /etc/ssh/ssh_host_ed25519_key
 Ensure permissions on SSH public host key files are configured.	stat /etc/ssh/ssh_host_rsa_key.pub,stat /etc/ssh/ssh_host_ecdsa_key.pub,stat /etc/ssh/ssh_host_ed25519_key.pub
@@ -250,7 +252,7 @@ Ensure SSH MaxStartups is configured.	sshd -T
 Ensure SSH MaxSessions is limited.	sshd -T
 
 
-# PAM
+# PAM -- need to do this 
 Ensure password creation requirements are configured.	-
 Ensure lockout for failed password attempts is configured.	-
 Ensure password reuse is limited.	-
@@ -263,10 +265,11 @@ Ensure default group for the root account is GID 0.	-
 Ensure default user umask is 027 or more restrictive.	sh -c "umask"
 Ensure default user shell timeout is 900 seconds or less.	-
 
+
 # Su
 Ensure access to the su command is restricted.	-
 
-# Perms 
+# Perms -- On memeory this appears to be done 
 Ensure permissions on /etc/passwd are configured.	stat /etc/passwd
 Ensure permissions on /etc/passwd- are configured.	stat /etc/passwd-
 Ensure permissions on /etc/group are configured.	stat /etc/group
@@ -276,7 +279,7 @@ Ensure permissions on /etc/shadow- are configured.	stat /etc/shadow-
 Ensure permissions on /etc/gshadow are configured.	stat /etc/gshadow
 Ensure permissions on /etc/gshadow- are configured.	stat /etc/gshadow-
 
-# Password 
+# Password This
 Ensure password fields are not empty.	-
 Ensure root is the only UID 0 account.	-
 Ensure shadow group is empty.	 sh -c "awk -F: -v GID=\"$(awk -F: '($1==\"shadow\") {print $3}' /etc/group)\" '($4==GID) {print $1}' /etc/passwd"
