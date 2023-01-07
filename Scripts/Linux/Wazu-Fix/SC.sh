@@ -127,15 +127,6 @@ chown root:root /boot/grub2/grub.cfg
 chmod og-rwx /boot/grub2/grub.cfg
 
 # Script -- 
-#Setting the boot loader password will require that anyone rebooting the system must enter a password before being able to set command line boot parameters.
-Create an encrypted password with grub-mkpasswd-pbkdf2 : # grub-mkpasswd-pbkdf2     
-Enter password: <password>      
-Reenter password: <password> 
-PBKDF2 hash of your password is <encrypted-password> 
-#Add the following into a custom /etc/grub.d configuration file: cat <<EOF     set superusers="<username>"   password_pbkdf2 <username> <encrypted-password>      EOF     
-The superuser/user information and password should not be contained in the /etc/grub.d/00_header file as this file could be overwritten in a package update. 
-If there is a requirement to be able to boot/reboot without entering the password, edit /etc/grub.d/10_linux and add --unrestricted to the line CLASS=  Example: CLASS="--class gnu-linux --class gnu --class os --unrestricted" Run the following command to update the grub2 configuration: # update-grub	
-
 # Single User Mode 
 sed -i "s|ExecStart.*|ExecStart=-/bin/sh -c '/sbin/sulogin; /usr/bin/systemctl --fail --no-block default'|g" /usr/lib/systemd/system/rescue.service
 sed -i "s|ExecStart.*|ExecStart=-/bin/sh -c '/sbin/sulogin; /usr/bin/systemctl --fail --no-block default'|g" /usr/lib/systemd/system/emergency.service
