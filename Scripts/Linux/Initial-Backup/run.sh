@@ -16,6 +16,13 @@ chown root:root /backups
 chmod 600 /backups
 
 echo "[+] Backing up old Bash to ~/copied-bash-history"
+# Create user-histories directory
+mkdir /backups/user-histories
+# Change ownership of the directory to root (explicit, should inherit from parent?)
+chown root:root /backups/user-histories
+# Make it read-write for root but no others
+chmod 644 /backups/user-histories
+
 
 # Get all home directoriers where histories may be stored
 UserHome="$(ls /home)"
@@ -24,16 +31,92 @@ UserHome="$(ls /home)"
 for user in $UserHome
 do
     result=$user"Primary-History"
-    if [ "$(awk -F':' '/bash/ { print $1}' /etc/passwd | grep $user | wc -l)" -eq 1 ];
-    then cp /home/$user/.bash_history /backups/$result
-    else if [ "$(awk -F':' '/zsh/ { print $1}' /etc/passwd | grep $user | wc -l)" -eq 1 ];
-    then cp /home/$user/.zsh_history /backups/$result
-    #else if 
-    #else
-    fi
+    for history in $(ls -a /home/$user | awk '/\..*_history/{print}')
+    do 
+      cp /home/$user/$history /backups/user-histories/$user$history
+    done 
 done
 
-echo "[+] Backing up old config to /etc/ssh/sshd_config.backup"
-cp /etc/ssh/sshd_config /backup/sshd_config.backup
+## SSH
+echo "[+] Backing up old SSH config to /backups/configs/sshd_config.backup"
+# Create config directory
+mkdir /backups/configs
+# Change ownership of the directory to root (explicit, should inherit from parent?)
+chown root:root /backups/configs
+# Make it read-write for root but no others
+chmod 644 /backups/configs
+# Copy SSH Config
+cp /etc/ssh/sshd_config /backups/configs/sshd_config.backup
 
-# Tell me what else!
+## PAM
+echo "[+] Backing up old PAM config to /backups/configs/sshd_config.backup"
+# Create config directory
+mkdir /backups/configs/pam
+# Change ownership of the directory to root (explicit, should inherit from parent?)
+chown root:root /backups/configs/pam
+# Make it read-write for root but no others
+chmod 644 /backups/configs/pam
+# Copy to config directory 
+if [ -d "/etc/pam.d" ]; then
+  cp -r /etc/pam.d /backups/configs/pam
+fi
+cp /etc/pam.conf /backups/configs/pam/pam.conf
+
+## Firewall configs
+echo "[+] Backing up old Firewall configs to /backups/firewall"
+# Create config directory
+mkdir /backups/firewall
+# Change ownership of the directory to root (explicit, should inherit from parent?)
+chown root:root /backups/firewall
+# Make it read-write for root but no others
+chmod 644 /backups/firewall
+# Copy to config directory 
+if [ -d "/etc/iptables/" ]; then 
+  cp /etc/iptables/rules.v4 /backups/firewall/rules.v4
+  cp /etc/iptables/rules.v6 /backups/firewall/rules.v6
+  echo "here"
+elif [ -d "/etc/sysconfig/iptables/" ]; then
+  cp /etc/sysconfig/iptables /backups/firewall/iptables
+  cp /etc/sysconfig/ip6tables /backups/firewall/ip6tables
+  echo "here2"
+elif [ -d "/etc/firewalld/" ]; then
+  cp /usr/lib/firewalld /backups/firewall/firewalld-system
+  cp /etc/firewalld /backups/firewall/firewalld-user
+  echo "here3"
+else 
+  cp /etc/nftables.conf /backups/firewall/nftables.conf
+  echo "here4"
+fi
+
+## Crontab
+echo "[+] Backing up Crontab configs to /backups/crontabs/"
+# Make Cron tab directory
+mkdir /backups/configs/crontabs
+# Change ownership of the directory to root (explicit, should inherit from parent?)
+chown root:root /backups/configs/crontabs
+# Make it read-write for root but no others
+chmod 644 /backups/configs/crontabs
+# Copy User Configurations 
+cp -r /var/spool/cron/crontabs /backups/configs/crontabs
+
+## Logs Directory
+echo "[+] Backing up logs directory to /backups/logs/"
+mkdir /backups/logs
+# Change ownership of the directory to root (explicit, should inherit from parent?)
+chown root:root /backups/log
+# Make it read-write for root but no others
+chmod 644 /backups/log
+# Copy logs
+cp -r /var/log /backups/log
+
+
+## Old
+  #if [ "$(awk -F':' '/bash/ { print $1}' /etc/passwd | grep $user | wc -l)" -eq 1 ];
+   # then cp /home/$user/.bash_history /backups/$result
+    #else if [ "$(awk -F':' '/zsh/ { print $1}' /etc/passwd | grep $user | wc -l)" -eq 1 ];
+    #then cp /home/$user/.zsh_history /backups/$result
+    #else if 
+    #else
+  #fi
+
+##

@@ -3,7 +3,7 @@
   * Depending on this people can use UFW more than IPTables
 * Simplify rules using modules like -- multiport 
   * Specify range of --dport with 1:10 [1,10]
-* Save rules to cfg yum
+* Save rules to cfg yum. --> service iptables save
 
 
 # IPTables (IPv4)
