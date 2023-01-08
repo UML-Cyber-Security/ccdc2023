@@ -1,3 +1,12 @@
+#! /bin/bash
+
+# Check if the scrip is ran as root.
+# $EUID is a env variable that contains the users UID
+# -ne 0 is not equal zero
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
 
 # Ownership of the message of the day
 chown root:root /etc/motd

@@ -74,18 +74,14 @@ chmod 644 /backups/firewall
 if [ -d "/etc/iptables/" ]; then 
   cp /etc/iptables/rules.v4 /backups/firewall/rules.v4
   cp /etc/iptables/rules.v6 /backups/firewall/rules.v6
-  echo "here"
 elif [ -d "/etc/sysconfig/iptables/" ]; then
   cp /etc/sysconfig/iptables /backups/firewall/iptables
   cp /etc/sysconfig/ip6tables /backups/firewall/ip6tables
-  echo "here2"
 elif [ -d "/etc/firewalld/" ]; then
   cp /usr/lib/firewalld /backups/firewall/firewalld-system
   cp /etc/firewalld /backups/firewall/firewalld-user
-  echo "here3"
 else 
   cp /etc/nftables.conf /backups/firewall/nftables.conf
-  echo "here4"
 fi
 
 ## Crontab

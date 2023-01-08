@@ -1,3 +1,13 @@
+#! /bin/bash
+
+# Check if the scrip is ran as root.
+# $EUID is a env variable that contains the users UID
+# -ne 0 is not equal zero
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
 # Create a new Conf file, sysctl will read and parse any file ending in .conf
 touch /etc/sysctl.d/ccdc.conf
 # Change ownership (and group) to root

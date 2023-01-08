@@ -58,10 +58,10 @@ elif [ "$PKG" = "apk" ]; then
     service docker start
 elif [ "$PKG" = "pacman" ]; then
     # Download -- Need to specify version and architecture 
-    pacman -U ./docker-desktop-<version>-<arch>.pkg.tar.zst
+   #pacman -U ./docker-desktop-<version>-<arch>.pkg.tar.zst
 
     # Start service 
-    systemctl --user start docker-desktop
+    #systemctl --user start docker-desktop
 fi
 
 # Need to run the Script to setup the Docker Firewall.

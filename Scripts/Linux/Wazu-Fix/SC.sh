@@ -1,130 +1,177 @@
 #! /bin/bash
 
+# Check if the scrip is ran as root.
+# $EUID is a env variable that contains the users UID
+# -ne 0 is not equal zero
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+##############------------ Move commands to respective sections!
+
 # Modprobe : Removing support for unneeded filesystem types reduces the local attack surface of the server. If this filesystem type is not needed, disable it.
 # Filesystems
-# CRAM
-1) Edit or create a file in the /etc/modprobe.d/ directory ending in .conf and add the following line: install cramfs /bin/true. 
-2) Run the following command to unload the cramfs module: # rmmod cramfs
+# Remove CRAM Filesystem
+touch /etc/modprobe.d/cramfs.conf
+echo "install cramfs /bin/true" > /etc/modprobe.d/cramfs.conf
+rmmod cramfs
 
-# remove freevx filesystem
-Edit or create a file in the /etc/modprobe.d/ directory ending in .conf Example: vi /etc/modprobe.d/freevxfs.conf and add the following line: install freevxfs /bin/true 
-Run the following command to unload the freevxfs module: # rmmod freevxfs
+# Remove freevx filesystem
+touch /etc/modprobe.d/cramfs.conf 
+echo "install freevxfs /bin/true" > /etc/modprobe.d/cramfs.conf 
+rmmod freevxfs
 
-# Remove jffs2
-Edit or create a file in the /etc/modprobe.d/ directory ending in .conf Example: vi /etc/modprobe.d/jffs2.conf and add the following line: install jffs2 /bin/true 
-Run the following command to unload the jffs2 module: # rmmod jffs2
+# Remove jffs2 Filesystem
+touch /etc/modprobe.d/jffs2.conf 
+echo "install jffs2 /bin/true" > /etc/modprobe.d/jffs2.conf 
+rmmod jffs2
 
-# remove hfs
-Edit or create a file in the /etc/modprobe.d/ directory ending in .conf Example: vi /etc/modprobe.d/hfs.conf and add the following line: install hfs /bin/true 
-Run the following command to unload the hfs module: # rmmod hfs
+# Remove hfs Filesystem
+touch /etc/modprobe.d/hfs.conf 
+echo "install hfs /bin/true" > /etc/modprobe.d/hfs.conf 
+rmmod hfs
 
-# Remove hfsplus
-Edit or create a file in the /etc/modprobe.d/ directory ending in .confExample: vi /etc/modprobe.d/hfsplus.conf and add the following line: install hfsplus /bin/true 
-Run the following command to unload the hfsplus module: # rmmod hfsplus
-# remove udf
-Edit or create a file in the /etc/modprobe.d/ directory ending in .conf Example: vi /etc/modprobe.d/udf.conf and add the following line: install udf /bin/true 
-Run the following command to unload the udf module: # rmmod udf
+# Remove hfsplus Filesystem
+touch /etc/modprobe.d/hfsplus.conf 
+echo "install hfsplus /bin/true" > /etc/modprobe.d/hfsplus.conf 
+rmmod hfsplus
 
-# The /tmp directory is a world-writable directory used for temporary storage by all users and some applications.
-Configure /etc/fstab as appropriate. Example: tmpfs /tmp tmpfs defaults,rw,nosuid,nodev,noexec,relatime 0 0 or 
-Run the following commands to enable systemd /tmp mounting: 
-systemctl unmask tmp.mount 
-systemctl enable tmp.mount 
-Edit /etc/systemd/system/local-fs.target.wants/tmp.mount to configure the /tmp mount: [Mount] What=tmpfs Where=/tmp Type=tmpfs Options=mode=1777,strictatime,noexec,nodev,nosuid	
+# Remove udf
+touch /etc/modprobe.d/udf.conf
+echo "install udf /bin/true" > /etc/modprobe.d/hfsplus.conf 
+rmmod udf
 
-# Node The nodev mount option specifies that the filesystem cannot contain special devices.
-Edit the /etc/fstab file and add nodev to the fourth field (mounting options) for the /tmp partition. See the fstab(5) manual page for more information. Run the following command to remount /tmp: # mount -o remount,nodev /tmp     OR      
-OR
-Edit /etc/systemd/system/local-fs.target.wants/tmp.mount to add nodev to the /tmp mount options:  [Mount]   Options=mode=1777,strictatime,noexec,nodev,nosuid 
-Run the following command to restart the systemd daemon: #  systemctl daemon-reload	
+# Dont care?
+# USB storage provides a means to transfer and store files insuring persistence and availability of the files independent of network connection status. Its popularity and utility has led to USB-based malware being a simple and common means for network infiltration and a first step to establishing a persistent threat within a networked environment.
+touch /etc/modprobe.d/usb_storage.conf 
+echo "install usb-storage /bin/true" > /etc/modprobe.d/usb_storage.conf  
+rmmod usb-storage	
 
-# The nosuid mount option specifies that the filesystem cannot contain setuid files.
-Edit the /etc/fstab file and add nosuid to the fourth field (mounting options) for the /tmp partition. See the fstab(5) manual page for more information. Run the following command to remount /tmp: # mount -o remount,nosuid /tmp       
-OR
-Edit /etc/systemd/system/local-fs.target.wants/tmp.mount to add nosuidto the /tmp mount options:
-[Mount]  Options=mode=1777,strictatime,noexec,nodev,nosuid  
-Run the following command to remount /tmp:
-# mount -o remount,nosuid /tmp
+#Edit or create a file in the /etc/modprobe.d/ directory ending in .conf Example: vim /etc/modprobe.d/dccp.conf and add the following line: install dccp /bin/true
+#Edit or create a file in the /etc/modprobe.d/ directory ending in .conf Example: vim /etc/modprobe.d/sctp.conf and add the following line: install sctp /bin/true
+#Edit or create a file in the /etc/modprobe.d/ directory ending in .conf Example: vim /etc/modprobe.d/rds.conf and add the following line: install rds /bin/true
+#Edit or create a file in the /etc/modprobe.d/ directory ending in .conf Example: vim /etc/modprobe.d/tipc.conf and add the following line: install tipc /bin/true
 
-# The noexec mount option specifies that the filesystem cannot contain executable binaries.
-Edit the /etc/fstab file and add noexec to the fourth field (mounting options) for the /tmp partition. See the fstab(5) manual page for more information. Run the following command to remount /tmp: # mount -o remount,noexec /tmp      
- OR
- Edit /etc/systemd/system/local-fs.target.wants/tmp.mount to add noexec to the /tmp mount options: 
-[Mount]  Options=mode=1777,strictatime,noexec,nodev,nosuid 
-Run the following command to remount /tmp: # mount -o remount,noexec /tmp
+###############################################################
 
-# /dev/shm is a traditional shared memory concept. One program will create a memory portion, which other processes (if permitted) can access. Mounting tmpfs at /dev/shmis handled automatically by systemd.
-Edit the /etc/fstab file and add nodev to the fourth field (mounting options) for the /dev/shm partition. See the fstab(5) manual page for more information. \
-Run the following command to remount /dev/shm: # mount -o remount,nodev /dev/shm	
+# auto mount -- Will this mess with docker or anything?
+# Run one of the following commands:  Run the following command to disable autofs: # systemctl --now disable autofs    OR  Run the following command to remove autofs:  # apt purge autofs
+systemctl --now disable autofs # Already handeled 
 
-#The nodev mount option specifies that the filesystem cannot contain special devices.
-Edit the /etc/fstab file and add nodev to the fourth field (mounting options) for the /dev/shm partition. See the fstab(5) manual page for more information. 
-Run the following command to remount /dev/shm: # mount -o remount,nodev /dev/shm	
+# Undo Prelinks
+prelink -ua Uninstall prelink
+# Remove Prelink -- System Specific?
+apt purge prelink -y
 
-# The nosuid mount option specifies that the filesystem cannot contain setuid files.
-Edit the /etc/fstab file and add nosuid to the fourth field (mounting options) for the /dev/shm partition. See the fstab(5) manual page for more information. 
-Run the following command to remount /dev/shm: # mount -o remount,nosuid /dev/shm	
+####################################################
+# Resttict core dumps 
+sed -i 's/\(.* End of file\)/* hard core 0\n\1/g' /etc/security/limits.conf
+echo "fs.suid_dumpable = 0" >> /etc/sysctl.d/ccdc.conf 
+# Apply sysctl config ((This is in the file))
 
-# The noexec mount option specifies that the filesystem cannot contain executable binaries.
-Edit the /etc/fstab file and add noexec to the fourth field (mounting options) for the /dev/shm partition. See the fstab(5) manual page for more information. Run the following command to remount /dev/shm: # mount -o remount,noexec /dev/shm	
+#######################################################
+#Edit the /etc/motd file with the appropriate contents according to your site policy, remove any instances of \m , \r , \s , \v or references to the OS platform OR If the motd is not used, this file can be removed. Run the following command to remove the motd file: # rm /etc/motd
+sed -i 's#[\/m|\/r|\/s|\/v]##g' /etc/motd
+#remove references to the OS platform 
 
-# The /var directory is used by daemons and other system services to temporarily store dynamic data. Some directories created by these processes may be world-writable.-- No
-For new installations, during installationcreate a custom partition setup and specify a separate partition for /var. For systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.	
+sed -i 's#[\/m|\/r|\/s|\/v]##g' /etc/issue
+#or references to the OS platform  # They have > in the echo which will bash the contents inside already.
+echo "Authorized uses only. All activity may be monitored and reported." >> /etc/issue
 
-# The /var/tmp directory is a world-writable directory used for temporary storage by all users and some applications. -- No
-For new installations, during installation create a custom partition setup and specify a separate partition for /var/tmp. For systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.	
+sed -i 's#[\/m|\/r|\/s|\/v]##g' /etc/issue.net
+#references to the OS platform:
+echo "Authorized uses only. All activity may be monitored and reported." >> /etc/issue.net
 
-# The nodev mount option specifies that the filesystem cannot contain special devices.
-Edit the /etc/fstab file and add nodev to the fourth field (mounting options) for the /var/tmp partition. See the fstab(5) manual page for more information. Run the following command to remount /var/tmp : # mount -o remount,nodev /var/tmp	
+# Change motd permissions 
+chown root:root /etc/motd 
+chmod u-x,go-wx /etc/motd
 
-# The nosuid mount option specifies that the filesystem cannot contain setuid files.
-Edit the /etc/fstab file and add nosuid to the fourth field (mounting options) for the /var/tmp partition. See the fstab(5) manual page for more information. Run the following command to remount /var/tmp: # mount -o remount,nosuid /var/tmp	
-# The noexec mount option specifies that the filesystem cannot contain executable binaries.
-Edit the /etc/fstab file and add noexec to the fourth field (mounting options) for the /var/tmp partition. See the fstab(5) manual page for more information. Run the following command to remount /var/tmp: # mount -o remount,noexec /var/tmp	
-# The /var/log directory is used by system services to store log data.
-For new installations, during installation create a custom partition setup and specify a separate partition for /var/log.	
-# The auditing daemon, auditd, stores log data in the /var/log/audit directory.
-For new installations, during installation create a custom partition setup and specify a separate partition for /var/log/audit. For systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.	
-# The /home directory is used to support disk storage needs of local users.
-For new installations, during installation create a custom partition setup and specify a separate partition for /home. For systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.	
-# The nodev mount option specifies that the filesystem cannot contain special devices.
-Edit the /etc/fstab file and add nodev to the fourth field (mounting options) for the /home partition. See the fstab(5) manual page for more information. # mount -o remount,nodev /home	
+chown root:root /etc/issue 
+chmod u-x,go-wx /etc/issue
+
+chown root:root /etc/issue.net 
+chmod u-x,go-wx /etc/issue.net
+
+#### GUI Message
+ if [ -f "/etc/gdm3/greeter.dconf-defaults" ]; then 
+    echo "[org/gnome/login-screen], banner-message-enable=true, banner-message-text='Authorized uses only. All activity may be monitored and reported.'" >> /etc/gdm3/greeter.dconf-defaults
 
 
+# Time Synchronization 
+#apt install chrony # -- UBUNTU 
+# Add Server line to  /etc/chrony/chrony.conf
+	#   server 0.us.pool.ntp.org
+	#   server 1.us.pool.ntp.org
+	#   server 2.us.pool.ntp.org
+	#   server 3.us.pool.ntp.org
+#systemctl --now mask systemd-timesyncd
 
+
+# Remove XServer--Ubuntu
+apt purge xserver-xorg*
+
+# avahi automated network device discovery
+# Stop disable
+systemctl --now disable avahi-daemon
+systemctl stop avahi-daemon.socket
+# Remove --Ubuntu
+apt purge avahi-daemon
+
+# CUPS, no printers--Ubuntu
+apt purge cups
+
+# isc-dhcp-server -- Remove DHCP Serve capablilities --Ubuntu
+apt purge isc-dhcp-server
+
+# LDAP server removal --Ubuntu
+apt purge slapd
+
+# Remove Network File Server --Ubuntu
+apt purge nfs-kernel-server
+
+# Remove DNS -- Some
+apt purge bind9
+
+# Remove FTPserver -- All probably
+apt purge vsftpd
+
+# Remove apache server
+apt purge apache2
+
+# Dotcove --Ubuntu IMAP POP3 (mail access servers) --Some 
+apt purge dovecot-imapd dovecot-pop3d
+
+# Remove Samba server
+apt purge samba
+
+# Remove squid proxy server 
+apt purge squid
+
+# Remove simple network management server 
+apt purge snmpd
+
+# Remove RPC client
+apt purge rpcbind
+
+# Disable IPv6
+#Edit /etc/default/grub and add ipv6.disable=1 to the GRUB_CMDLINE_LINUX parameters: GRUB_CMDLINE_LINUX="ipv6.disable=1" Run the following command to update the grub2 configuration: # update-grub
+sed "s/GRUB_CMDLINE_LINUX=\"ipv6.disable=1\"" >>  /etc/default/grub # sed find and replace? need to look at example  
+update-grub
+
+#Edit /etc/exim4/update-exim4.conf and and or modify following lines to look like the lines below: dc_eximconfig_configtype='local' dc_local_interfaces='127.0.0.1 ; ::1' dc_readhost='' dc_relay_domains='' dc_minimaldns='false' dc_relay_nets='' dc_smarthost='' dc_use_split_config='false' dc_hide_mailname='' dc_mailname_in_oh='true' dc_localdelivery='mail_spool' Restart exim4: # systemctl restart exim4
+
+
+# Disable wireless interfaces 
+# nmcli radio all off # Not needed 
+
+
+# Remove 
 # Protocols
 #Ensure DCCP is disabled.	
 #Ensure SCTP is disabled.	
 #Ensure RDS is disabled.	
 #Ensure TIPC is disabled.	
 
-
-# auto mount -- Will this mess with docker or anything?
-# Run one of the following commands:  Run the following command to disable autofs: # systemctl --now disable autofs    OR  Run the following command to remove autofs:  # apt purge autofs
-systemctl --now disable autofs
-
-# Dont care?
-# USB storage provides a means to transfer and store files insuring persistence and availability of the files independent of network connection status. Its popularity and utility has led to USB-based malware being a simple and common means for network infiltration and a first step to establishing a persistent threat within a networked environment.
-Edit or create a file in the /etc/modprobe.d/ directory ending in .conf Example: vi /etc/modprobe.d/usb_storage.conf and 
-add the following line: # install usb-storage /bin/true . 
-Run the following command to unload the usb-storage module: # rmmod usb-storage	
-
-# install aid 
-# ubuntu
-echo aide-common aideinit/copynew boolean false
-echo aide-common aide/aideinit boolean false
-echo aide-common aideinit/overwritenew boolean true
-
-apt install aide aide-common -y
-aideinit
-mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
-
-# Create Cron monitoring 
-
-
-# Bootloader Permissions
-chown root:root /boot/grub2/grub.cfg 
-chmod og-rwx /boot/grub2/grub.cfg
 
 # Script -- 
 # Single User Mode 

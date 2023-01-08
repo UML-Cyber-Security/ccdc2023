@@ -12,3 +12,8 @@ The Following will remove and replace them so they work.
 sed -i -e 's/\r$//' Script.sh 
 ```
 
+
+```
+debconf-show can be used to show selections that we can set using 
+echo package option | debconf-set-selections
+```

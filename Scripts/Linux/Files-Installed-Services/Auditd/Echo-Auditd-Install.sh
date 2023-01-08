@@ -1,8 +1,20 @@
 #! /bin/bash
+
+# Check if the scrip is ran as root.
+# $EUID is a env variable that contains the users UID
+# -ne 0 is not equal zero
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
 # If there exists this file, it is a debian based system. Use APT
-if [ -f "/etc/debian_version" ]; 
-    then apt-get -q install auditd audispd-plugins -y
-    else yum install auditd audispd-plugins -y
+if [ -f "/etc/debian_version" ]; then
+    apt-get -q install auditd audispd-plugins -y
+elif [ -f "/etc/redhat-release" ]; then
+    yum install auditd audit-libs -y
+elif [ -f "/etc/arch-release" ] 
+    echo "Arch, Will this come up -- probably should do fedora"
 fi
 
 systemctl --now enable auditd
