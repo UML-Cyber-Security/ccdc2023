@@ -8,7 +8,8 @@ Change to playbooks directory by using the below command
 
 ## **Deploying Wazuh**
 
-We are going to deploy Wazuh on a single node initally and it can be done by running the foloowing command
+We are going to deploy Wazuh on a single node initally and it can be done by running the following command
+
 ``` ansible-playbook -vvv wazuh-single.yml ```
 
 ## **Deploying Suricata**
