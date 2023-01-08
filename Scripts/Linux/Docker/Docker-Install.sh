@@ -8,7 +8,8 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-# Stolen from online. Differnet package managers 
+# Stolen from online. Differnet package managers
+# Declare an array, and map values 
 declare -A osInfo;
 osInfo[/etc/redhat-release]=yum
 osInfo[/etc/arch-release]=pacman

@@ -10,7 +10,34 @@ if [ "$EUID" -ne 0 ]
 fi
 
 # Install 
+# Stolen from online. Differnet package managers
+# Declare an array, and map values 
+declare -A osInfo;
+osInfo[/etc/redhat-release]=yum
+osInfo[/etc/arch-release]=pacman
+osInfo[/etc/debian_version]=apt-get
+#osInfo[/etc/alpine-release]=apk # Not avalable on Alpine linux
+#osInfo[/etc/SuSE-release]=zypp
+#osInfo[/etc/gentoo-release]=emerge
+
+PKG="apt-get"
+for f in ${!osInfo[@]}
+do
+    if [[ -f $f ]];then # Could move the ifs in here.
+        PKG=${osInfo[$f]}
+        if [ "$PKG" = "apt-get" ] | [ "$PKG" = "yum" ]; then
+          $PKG install glusterfs
+        elif [ "$PKG" = "pacman" ]; then
+          echo "We Have more issues"
+        fi
+        break
+    fi
+done
+
 apt-get install glusterfs-server -y
+
+
+# Enable and Start 
 systemctl enable glusterd
 systemctl start glusterd
 

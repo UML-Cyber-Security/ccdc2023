@@ -36,9 +36,9 @@ sysctl -w net.ipv4.route.flush=1
 
 # Disable and Stop rsync it is considered insecure
 systemctl --now disable rsync 
-# Disable and Stop nis (If it is there) --> Not needed with purge
+# Disable and Stop nis (If it is there) --> Not needed with purge?
 systemctl --now disable nis 
 
 
-# Enforce Defualt Apparmor Configuration
+# Enforce Defualt Apparmor Configuration --> will we use SELinux insted?
 aa-enforce /etc/apparmor.d/* 
