@@ -17,8 +17,17 @@ elif [ -f "/etc/redhat-release" ]; then
 elif [ -f "/etc/arch-release" ]; then
     echo "Arch, Will this come up -- probably should do fedora"
 fi
-# Enable syslog
+# Enable rsyslog
 systemctl --now enable rsyslog
 # Some settings -- Note
-sed -i '/FileCreateMode/c\$FileCreateMode 0640' /etc/rsyslog.conf
-sed -i '/FileCreateMode/c\$FileCreateMode 0640' /etc/rsyslog.d/*.conf
+if [ "$(grep "FileCreateMode" /etc/rsyslog.conf | wc -l)" -ne 0 ]; then 
+    sed -i '/FileCreateMode/c\$FileCreateMode 0640' /etc/rsyslog.conf
+else 
+    echo "\$FileCreateMode 0640"
+fi
+#
+if [ "$(grep "FileCreateMode"  /etc/rsyslog.d/*.conf | wc -l)" -ne 0 ]; then 
+    sed -i '/FileCreateMode/c\$FileCreateMode 0640' /etc/rsyslog.d/*.conf
+else 
+    echo "\$FileCreateMode 0640"
+fi
