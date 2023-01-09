@@ -1,0 +1,40 @@
+---
+
+- hosts: Debian_Agents
+  become: true
+  
+  tasks:
+
+    #  - name: Copying the SSH key to the remote host 
+    # ansible.builtin.authorized_key:
+    #   user: user
+    #   key: "{{ lookup('file', '~/.ssh/authroized_keys/ansibleid_rsa.pub') }}"
+
+    # - name: Check if Wazuh agent service exits and if it does,start the service 
+    # ansible.builtin.service: 
+    #   name: wazuh-agent
+    #   state: present
+    # register: state
+
+    # - name: Output of the Wazuh agent if it exists
+    # debug:
+    #   var: state
+
+    - name: Adding machine as wazuh-agent
+      ansible.builtin.script: add_agent_debian.sh  
+      tags: add_agent
+      register: value
+
+    - name: Output of adding wazuh as an agent
+      debug:
+        var: value
+        
+
+    - name: Enabling and starting wazuh agent
+      ansible.builtin.script: Debian.sh
+      tags: Start_Agent
+      register: output
+
+    - name: Logging the output 
+      debug:
+        var: output
