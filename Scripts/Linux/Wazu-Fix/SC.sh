@@ -47,10 +47,27 @@ touch /etc/modprobe.d/usb_storage.conf
 echo "install usb-storage /bin/true" > /etc/modprobe.d/usb_storage.conf  
 rmmod usb-storage	
 
-#Edit or create a file in the /etc/modprobe.d/ directory ending in .conf Example: vim /etc/modprobe.d/dccp.conf and add the following line: install dccp /bin/true
-#Edit or create a file in the /etc/modprobe.d/ directory ending in .conf Example: vim /etc/modprobe.d/sctp.conf and add the following line: install sctp /bin/true
-#Edit or create a file in the /etc/modprobe.d/ directory ending in .conf Example: vim /etc/modprobe.d/rds.conf and add the following line: install rds /bin/true
-#Edit or create a file in the /etc/modprobe.d/ directory ending in .conf Example: vim /etc/modprobe.d/tipc.conf and add the following line: install tipc /bin/true
+#The Datagram Congestion Control Protocol (DCCP) is a transport layer protocol that supports streaming media and telephony. 
+# DCCP provides a way to gain access to congestion control, without having to do it at the application layer, 
+#but does not provide in- sequence delivery.
+# If the protocol is not being used, it is recommended that kernel module not be loaded, disabling the service to reduce the potential attack surface.
+touch /etc/modprobe.d/dccp.conf # Need to check if it is required.
+echo "install dccp /bin/true" > /etc/modprobe.d/dccp.conf 
+
+# The Stream Control Transmission Protocol (SCTP) is a transport layer protocol used to support message oriented communication, with several streams of messages in one connection. It serves a similar function as TCP and UDP, incorporating features of both. It is message-oriented like UDP, and ensures reliable in-sequence transport of messages with congestion control like TCP.
+#If the protocol is not being used, it is recommended that kernel module not be loaded, disabling the service to reduce the potential attack surface.
+touch /etc/modprobe.d/sctp.conf # Need to check if it is required.
+echo "install sctp /bin/true" >> /etc/modprobe.d/sctp.conf 
+
+# The Reliable Datagram Sockets (RDS) protocol is a transport layer protocol designed to provide low-latency, high-bandwidth communications between cluster nodes. It was developed by the Oracle Corporation.
+#If the protocol is not being used, it is recommended that kernel module not be loaded, disabling the service to reduce the potential attack surface.
+touch /etc/modprobe.d/rds.conf # Need to check if it is required.
+echo "install rds /bin/true" >> /etc/modprobe.d/rds.conf
+
+# The Transparent Inter-Process Communication (TIPC) protocol is designed to provide communication between cluster nodes.
+# Again if not needed disable 
+touch /etc/modprobe.d/tipc.conf # Need to check if it is required.
+echo "install tipc /bin/true" >> /etc/modprobe.d/rds.conf
 
 ###############################################################
 
@@ -164,24 +181,129 @@ update-grub
 # Disable wireless interfaces 
 # nmcli radio all off # Not needed 
 
+# Sysctl
+## May break systems >> refer to this for simplified docker wokeing one https://bugs.launchpad.net/ubuntu/+source/procps/+bug/1676540
 
-# Remove 
-# Protocols
-#Ensure DCCP is disabled.	
-#Ensure SCTP is disabled.	
-#Ensure RDS is disabled.	
-#Ensure TIPC is disabled.	
+# Prevent ICMP IPv4 Redirects (Use when a system is not acting as a router)
+echo "net.ipv4.conf.all.send_redirects = 0" >> /etc/sysctl.d/ccdc.conf 
+echo "net.ipv4.conf.default.send_redirects = 0" >> /etc/sysctl.d/ccdc.conf 
 
 
-# Script -- 
-# Single User Mode 
+# Run the following command to restore the default parameter and set the active kernel parameter: # grep -Els "^\s*net\.ipv4\.ip_forward\s*=\s*1" /etc/sysctl.conf /etc/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf /run/sysctl.d/*.conf | while read filename; do sed -ri "s/^\s*(net\.ipv4\.ip_forward\s*)(=)(\s*\S+\b).*$/# *REMOVED* \1/" $filename; done; sysctl -w net.ipv4.ip_forward=0; sysctl -w net.ipv4.route.flush=1 IF IPv6 is enabled: Run the following command to restore the default parameter and set the active kernel parameter: # grep -Els "^\s*net\.ipv6\.conf\.all\.forwarding\s*=\s*1" /etc/sysctl.conf /etc/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf /run/sysctl.d/*.conf | while read filename; do sed -ri "s/^\s*(net\.ipv6\.conf\.all\.forwarding\s*)(=)(\s*\S+\b).*$/# *REMOVED* \1/" $filename; done; sysctl -w net.ipv6.conf.all.forwarding=0; sysctl -w net.ipv6.route.flush=1
+ 
+# In networking, source routing allows a sender to partially or fully specify the route packets take through a network. 
+# In contrast, non-source routed packets travel a path determined by routers in the network. In some cases, 
+# systems may not be routable or reachable from some locations (e.g. private addresses vs. Internet routable), 
+# and so source routed packets would need to be used.
+###### Disable source routing 
+echo "net.ipv4.conf.all.accept_source_route = 0">> /etc/sysctl.d/ccdc.conf 
+echo "net.ipv4.conf.default.accept_source_route = 0 " >> /etc/sysctl.d/ccdc.conf 
+echo "net.ipv6.conf.all.accept_source_route = 0" >> /etc/sysctl.d/ccdc.conf 
+echo "net.ipv6.conf.default.accept_source_route = 0" >> /etc/sysctl.d/ccdc.conf 
+# Load conf values refresh 
+sysctl -w net.ipv6.route.flush=1
+
+
+# ICMP redirect messages are packets that convey routing information and tell your host (acting as a router) to send packets 
+# via an alternate path. It is a way of allowing an outside routing device to update your system routing tables. By setting 
+# net.ipv4.conf.all.accept_redirects and net.ipv6.conf.all.accept_redirects to 0, the system will not accept any ICMP redirect 
+# messages, and therefore, won't allow outsiders to update the system's routing tables.
+
+# Disable IPv4 redirects
+echo "net.ipv4.conf.all.accept_redirects = 0" >> /etc/sysctl.d/ccdc.conf 
+echo "net.ipv4.conf.default.accept_redirects = 0" >> /etc/sysctl.d/ccdc.conf 
+# IPv6 Redirects 
+echo "net.ipv6.conf.all.accept_redirects = 0"  >> /etc/sysctl.d/ccdc.conf 
+echo "net.ipv6.conf.default.accept_redirects = 0"  >> /etc/sysctl.d/ccdc.conf 
+# Load conf values refresh 
+sysctl -w net.ipv6.route.flush=1
+
+# Disable secure redirects, same as normal redirects but from known gateways
+echo "net.ipv4.conf.all.secure_redirects = 0" >> /etc/sysctl.d/ccdc.conf 
+echo "net.ipv4.conf.default.secure_redirects = 0" >> /etc/sysctl.d/ccdc.conf 
+# Load Conf values sysctl -p // --> see sysctl-AA.sh
+sysctl -w net.ipv4.route.flush=1
+
+# Log packets with unroutable destinations
+echo "net.ipv4.conf.all.log_martians = 1 " >> /etc/sysctl.d/ccdc.conf # -- Done in script
+echo "net.ipv4.conf.default.log_martians = 1" >> /etc/sysctl.d/ccdc.conf 
+# Load conf
+sysctl -w net.ipv4.route.flush=1
+
+# Ignore all echo and timestamp broadcast requests 
+echo "net.ipv4.icmp_echo_ignore_broadcasts = 1" >> /etc/sysctl.d/ccdc.conf # Already done I think
+# Load conf
+sysctl -w net.ipv4.route.flush=1
+
+# Prevent kernel from logging bogus responces
+echo "net.ipv4.icmp_ignore_bogus_error_responses = 1" >> /etc/sysctl.d/ccdc.conf # Already done I think
+# Load conf
+sysctl -w net.ipv4.route.flush=1
+
+# forces the Linux kernel to utilize reverse path filtering on a received packet to determine if the packet was valid.
+# Essentially, with reverse path filtering, if the return packet does not go out the same interface that the corresponding 
+# source packet came from, the packet is dropped (and logged if log_martians is set).
+echo "net.ipv4.conf.all.rp_filter = 1" >> /etc/sysctl.d/ccdc.conf # Already done I think
+echo "net.ipv4.conf.default.rp_filter = 1" >> /etc/sysctl.d/ccdc.conf # Already done I think
+# Load congig
+sysctl -w net.ipv4.route.flush=1
+
+# Prevent Syn Flooding
+echo "net.ipv4.tcp_syncookies = 1" >> /etc/sysctl.d/ccdc.conf
+# Load conf
+sysctl -w net.ipv4.route.flush=1
+
+# IF IPv6 is enabled disable the system's ability to accept IPv6 router advertisements.
+#It is recommended that systems do not accept router advertisements as they could be tricked into routing traffic to compromised machines. Setting hard routes within the system (usually a single default route to a trusted router) protects the system from bad routes.
+echo "net.ipv6.conf.all.accept_ra = 0" >> /etc/sysctl.d/ccdc.conf #--> May not recomend, but most traffic will be over IPv4 so this may be good? O.W IPv6 router needs to be hard set
+echo "net.ipv6.conf.default.accept_ra = 0" >> /etc/sysctl.d/ccdc.conf
+# Load config
+sysctl -w net.ipv6.route.flush=1
+
+# This was in the other script forgot to move it over 
+echo 'Defaults use_pty' | sudo EDITOR="tee -a" visudo
+
+# Another thing, chaneg logs locations or sudo stuff --> good for soc.
+
+
+# SSHD config  perms and ownership
+chown root:root /etc/ssh/sshd_config 
+chmod og-rwx /etc/ssh/sshd_config
+
+# SSH Private key ownership and permissions 
+find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chown root:root {} \;
+find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chmod 0600 {} \;
+
+# SSH Public Keys ownership and permissions
+find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chmod 0644 {} \; 
+find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chown root:root {} \;
+
+# Set log level to verbose 
+sed -i 's/.*\(LogLevel\).*/\1 VERBOSE/g' /etc/ssh/sshd_config
+
+
+
+
+# Root Group
+usermod -g 0 root
+
+
+
+#If any accounts in the /etc/shadow file do not have a password, run the following command to lock the account until it can be determined why it does not have a password: # passwd -l <em><username></em>. Also, check to see if the account is logged in and investigate what it is being used for to determine if it needs to be forced off.
+
+
+
+# Single User Mode --> Look this up why did I do this, is it useful?
 sed -i "s|ExecStart.*|ExecStart=-/bin/sh -c '/sbin/sulogin; /usr/bin/systemctl --fail --no-block default'|g" /usr/lib/systemd/system/rescue.service
 sed -i "s|ExecStart.*|ExecStart=-/bin/sh -c '/sbin/sulogin; /usr/bin/systemctl --fail --no-block default'|g" /usr/lib/systemd/system/emergency.service
 #<< They just want us to set a password on the root account...>>
 
 
-Run the following command to restore binaries to normal: # prelink -ua Uninstall prelink using the appropriate package manager or manual installation: # apt purge prelink	prelink is a program that modifies ELF shared libraries and ELF dynamically linked binaries in such a way that the time needed for the dynamic linker to perform relocations at startup significantly decreases.
-################# LINE 34
+
+#Run the following command to restore binaries to normal: # prelink -ua Uninstall prelink using the appropriate package manager or manual installation: # apt purge prelink	prelink is a program that modifies ELF shared libraries and ELF dynamically linked binaries in such a way that the time needed for the dynamic linker to perform relocations at startup significantly decreases.
+
+
+
 
 # Security Update 
 apt -s upgrade
@@ -192,31 +314,10 @@ if [ "$(systemctl is-enabled systemd-timesyncd)" != "disabled" ]; then
     timedatectl set-ntp on
 fi
 
-# Ensure RPC is not installed.
 
 #Disable IPv6.
 
-#Ensure wireless interfaces are disabled.	nmcli radio wifi,nmcli radio wwan
 
-
-# Sys
-#Ensure packet redirect sending is disabled.	sysctl net.ipv4.conf.all.send_redirects
-#Ensure IP forwarding is disabled.	sysctl net.ipv4.ip_forward
-#Ensure source routed packets are not accepted.	sysctl net.ipv4.conf.all.accept_source_route,sysctl net.ipv4.conf.default.accept_source_route,grep -Rh net\.ipv4\.conf\.all\.accept_source_route /etc/sysctl.conf /etc/sysctl.d
-#Ensure ICMP redirects are not accepted.	sysctl net.ipv4.conf.all.accept_redirects,sysctl net.ipv4.conf.default.accept_redirects
-#Ensure secure ICMP redirects are not accepted.	sysctl net.ipv4.conf.all.secure_redirects
-#Ensure suspicious packets are logged.	sysctl net.ipv4.conf.all.log_martians
-#Ensure broadcast ICMP requests are ignored.	sysctl net.ipv4.icmp_echo_ignore_broadcasts,grep -Rh net\.ipv4\.icmp_echo_ignore_broadcasts /etc/sysctl.conf /etc/sysctl.d
-#Ensure bogus ICMP responses are ignored.	sysctl net.ipv4.icmp_ignore_bogus_error_responses,grep -Rh net\.ipv4\.icmp_ignore_bogus_error_responses /etc/sysctl.conf /etc/sysctl.d
-##Ensure Reverse Path Filtering is enabled.	sysctl net.ipv4.conf.all.rp_filter
-#Ensure TCP SYN Cookies is enabled.	sysctl net.ipv4.tcp_syncookies,grep -Rh net\.ipv4\.tcp_syncookies /etc/sysctl.conf /etc/sysctl.d/*
-#Ensure IPv6 router advertisements are not accepted.	sysctl net.ipv6.conf.all.accept_ra
-
-
-# Iptables
-# iptables -A INPUT -i lo -j ACCEPT 
-# iptables -A OUTPUT -o lo -j ACCEPT 
-# iptables -A INPUT -s 127.0.0.0/8 -j DROP --> this line after the lo accept
 
 
 # Auditd
@@ -247,13 +348,13 @@ fi
 
 
 #journald
-Ensure journald is configured to send logs to rsyslog.	-
-Ensure journald is configured to compress large log files.	-
-Ensure journald is configured to write logfiles to persistent disk.	-
+#Ensure journald is configured to send logs to rsyslog.	-
+#Ensure journald is configured to compress large log files.	-
+#Ensure journald is configured to write logfiles to persistent disk.	-
 
 
 # perm Log-- need to check
-Ensure permissions on all logfiles are configured.	find /var/log -type f -ls
+#Ensure permissions on all logfiles are configured.	find /var/log -type f -ls
 
 # Cron -- this is already implemented 
 Ensure permissions on all logfiles are configured.	find /var/log -type f -ls
@@ -274,29 +375,7 @@ Ensure sudo is installed.	dpkg -s sudo
 Ensure sudo commands use pty.	-
 Ensure sudo log file exists.	-
 
-# This or some of it may be done -- memeory 
-Ensure permissions on /etc/ssh/sshd_config are configured.	stat /etc/ssh/sshd_config
-Ensure permissions on SSH private host key files are configured.	stat /etc/ssh/ssh_host_rsa_key,stat /etc/ssh/ssh_host_ecdsa_key,stat /etc/ssh/ssh_host_ed25519_key
-Ensure permissions on SSH public host key files are configured.	stat /etc/ssh/ssh_host_rsa_key.pub,stat /etc/ssh/ssh_host_ecdsa_key.pub,stat /etc/ssh/ssh_host_ed25519_key.pub
-Ensure SSH access is limited.	sshd -T
-Ensure SSH LogLevel is appropriate.	sshd -T
-Ensure SSH X11 forwarding is disabled.	sshd -T
-Ensure SSH MaxAuthTries is set to 4 or less.	sshd -T
-Ensure SSH IgnoreRhosts is enabled.	sshd -T
-Ensure SSH HostbasedAuthentication is disabled.	sshd -T
-Ensure SSH root login is disabled.	sshd -T
-Ensure SSH PermitEmptyPasswords is disabled.	sshd -T
-Ensure SSH PermitUserEnvironment is disabled.	sshd -T
-Ensure only strong ciphers are used.	sshd -T
-Ensure only strong MAC algorithms are used.	sshd -T
-Ensure only strong Key Exchange algorithms are used.	sshd -T
-Ensure SSH Idle Timeout Interval is configured.	sshd -T
-Ensure SSH LoginGraceTime is set to one minute or less.	sshd -T
-Ensure SSH warning banner is configured.	sshd -T
-Ensure SSH PAM is enabled.	sshd -T
-Ensure SSH AllowTcpForwarding is disabled.	sshd -T
-Ensure SSH MaxStartups is configured.	sshd -T
-Ensure SSH MaxSessions is limited.	sshd -T
+
 
 
 # PAM -- need to do this 
@@ -315,16 +394,6 @@ Ensure default user shell timeout is 900 seconds or less.	-
 
 # Su
 Ensure access to the su command is restricted.	-
-
-# Perms -- On memeory this appears to be done 
-Ensure permissions on /etc/passwd are configured.	stat /etc/passwd
-Ensure permissions on /etc/passwd- are configured.	stat /etc/passwd-
-Ensure permissions on /etc/group are configured.	stat /etc/group
-Ensure permissions on /etc/group- are configured.	stat /etc/group-
-Ensure permissions on /etc/shadow are configured.	stat /etc/shadow
-Ensure permissions on /etc/shadow- are configured.	stat /etc/shadow-
-Ensure permissions on /etc/gshadow are configured.	stat /etc/gshadow
-Ensure permissions on /etc/gshadow- are configured.	stat /etc/gshadow-
 
 # Password This
 Ensure password fields are not empty.	-

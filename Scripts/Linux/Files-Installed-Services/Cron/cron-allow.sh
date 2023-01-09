@@ -18,3 +18,5 @@ chmod og-rwx /etc/cron.allow
 chmod og-rwx /etc/at.allow
 chown root:root /etc/cron.allow
 chown root:root /etc/at.allow
+
+systemctl --now enable cron
