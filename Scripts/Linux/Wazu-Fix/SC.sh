@@ -31,23 +31,7 @@ fi
 echo "fs.suid_dumpable = 0" >> /etc/sysctl.d/ccdc.conf 
 # Apply sysctl config ((This is in the file))
 
-#######################################################
-#Edit the /etc/motd file with the appropriate contents according to your site policy, remove any instances of \m , \r , \s , \v or references to the OS platform OR If the motd is not used, this file can be removed. Run the following command to remove the motd file: # rm /etc/motd
-sed -i 's#[\/m|\/r|\/s|\/v]##g' /etc/motd
-#remove references to the OS platform 
-
-sed -i 's#[\/m|\/r|\/s|\/v]##g' /etc/issue
-#or references to the OS platform  # They have > in the echo which will bash the contents inside already.
-echo "Authorized uses only. All activity may be monitored and reported." >> /etc/issue
-
-sed -i 's#[\/m|\/r|\/s|\/v]##g' /etc/issue.net
-#references to the OS platform:
-echo "Authorized uses only. All activity may be monitored and reported." >> /etc/issue.net
-
-#### GUI Message
- if [ -f "/etc/gdm3/greeter.dconf-defaults" ]; then 
-    echo "[org/gnome/login-screen], banner-message-enable=true, banner-message-text='Authorized uses only. All activity may be monitored and reported.'" >> /etc/gdm3/greeter.dconf-defaults
-
+###################################################
 
 # Time Synchronization 
 #apt install chrony # -- UBUNTU 
@@ -207,18 +191,6 @@ echo 'Defaults logfile="/var/log/sudo.log"' | sudo EDITOR='tee -a' visudo
 # Another thing, chaneg logs locations or sudo stuff --> good for soc.
 
 
-# SSHD config  perms and ownership
-chown root:root /etc/ssh/sshd_config 
-chmod og-rwx /etc/ssh/sshd_config
-
-# SSH Private key ownership and permissions 
-find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chown root:root {} \;
-find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chmod 0600 {} \;
-
-# SSH Public Keys ownership and permissions
-find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chmod 0644 {} \; 
-find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chown root:root {} \;
-
 # Set log level to verbose 
 if [ "$(grep 'LogLevel' /etc/ssh/sshd_config | wc -l)" -ne 0 ]; then
   sed -i 's/.*\(LogLevel\).*/\1 VERBOSE/g' /etc/ssh/sshd_config
@@ -304,90 +276,26 @@ if [ "$(systemctl is-enabled systemd-timesyncd)" != "disabled" ]; then
 fi
 
 
-#Disable IPv6.
-
-
-
-
-# Auditd
-#Ensure auditing for processes that start prior to auditd is enabled.	-
-#Ensure audit log storage size is configured.	-
-#Ensure audit logs are not automatically deleted.	-
-#Ensure system is disabled when audit logs are full.	-
-#Ensure events that modify date and time information are collected.	-
-#Ensure events that modify user/group information are collected.	-
-#Ensure events that modify the system's network environment are collected.	-
-#Ensure events that modify the system's Mandatory Access Controls are collected.	-
-#Ensure login and logout events are collected.	-
-#Ensure session initiation information is collected.	-
-#Ensure discretionary access control permission modification events are collected.	-
-#Ensure unsuccessful unauthorized file access attempts are collected.	-
-#Ensure successful file system mounts are collected.	-
-#Ensure file deletion events by users are collected.	-
-#Ensure changes to system administration scope (sudoers) is collected.	-
-#Ensure system administrator command executions (sudo) are collected.	-
-#Ensure kernel module loading and unloading is collected.	-
-
-#rsyslog
-#Ensure rsyslog is installed.	dpkg -s rsyslog
-#Ensure rsyslog Service is enabled.	systemctl is-enabled rsyslog
-#Ensure rsyslog default file permissions configured.	-
-#Ensure rsyslog is configured to send logs to a remote log host.	grep -Rh ^*.* /etc/rsyslog.conf /etc/rsyslog.d/
-#Ensure remote rsyslog messages are only accepted on designated log hosts.	grep -Rh ^\$ModLoad[[:space:]]*imtcp /etc/rsyslog.conf /etc/rsyslog.d/
-
-
-#journald
-#Ensure journald is configured to send logs to rsyslog.	-
-#Ensure journald is configured to compress large log files.	-
-#Ensure journald is configured to write logfiles to persistent disk.	-
-
-
-# perm Log-- need to check
-#Ensure permissions on all logfiles are configured.	find /var/log -type f -ls
-
-# Cron -- this is already implemented 
-Ensure permissions on all logfiles are configured.	find /var/log -type f -ls
-Ensure cron daemon is enabled and running.	systemctl is-enabled cron,systemctl status cron
-Ensure permissions on /etc/crontab are configured.	stat /etc/crontab
-Ensure permissions on /etc/cron.hourly are configured.	stat /etc/cron.hourly
-Ensure permissions on /etc/cron.daily are configured.	stat /etc/cron.daily
-Ensure permissions on /etc/cron.weekly are configured.	stat /etc/cron.weekly
-Ensure permissions on /etc/cron.monthly are configured.	stat /etc/cron.monthly
-Ensure permissions on /etc/cron.d are configured.	stat /etc/cron.d
-
-Ensure at/cron is restricted to authorized users.	-
-Ensure at is restricted to authorized users.	-
-
-
-# sudo 
-Ensure sudo is installed.	dpkg -s sudo
-Ensure sudo commands use pty.	-
-Ensure sudo log file exists.	-
-
-
-
 
 # PAM -- need to do this 
-Ensure password creation requirements are configured.	-
-Ensure lockout for failed password attempts is configured.	-
-Ensure password reuse is limited.	-
-Ensure password hashing algorithm is SHA-512.	-
-Ensure minimum days between password changes is configured.	-
-Ensure password expiration is 365 days or less.	-
-Ensure password expiration warning days is 7 or more.	-
-Ensure inactive password lock is 30 days or less.	useradd -D
-Ensure default group for the root account is GID 0.	-
-Ensure default user umask is 027 or more restrictive.	sh -c "umask"
-Ensure default user shell timeout is 900 seconds or less.	-
+#Ensure password creation requirements are configured.	-
+#Ensure lockout for failed password attempts is configured.	-
+#Ensure password reuse is limited.	-
+#Ensure password hashing algorithm is SHA-512.	-
+#Ensure minimum days between password changes is configured.	-
+#Ensure password expiration is 365 days or less.	-
+#Ensure password expiration warning days is 7 or more.	-
+#Ensure inactive password lock is 30 days or less.	useradd -D
+#Ensure default group for the root account is GID 0.	-
+#Ensure default user umask is 027 or more restrictive.	sh -c "umask"
+#Ensure default user shell timeout is 900 seconds or less.	-
 
 
-# Su
-Ensure access to the su command is restricted.	-
 
 # Password This
-Ensure password fields are not empty.	-
-Ensure root is the only UID 0 account.	-
-Ensure shadow group is empty.	 sh -c "awk -F: -v GID=\"$(awk -F: '($1==\"shadow\") {print $3}' /etc/group)\" '($4==GID) {print $1}' /etc/passwd"
+#Ensure password fields are not empty.	-
+#Ensure root is the only UID 0 account.	-
+#Ensure shadow group is empty.	 sh -c "awk -F: -v GID=\"$(awk -F: '($1==\"shadow\") {print $3}' /etc/group)\" '($4==GID) {print $1}' /etc/passwd"
 
 
 

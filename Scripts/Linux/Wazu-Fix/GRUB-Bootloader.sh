@@ -19,7 +19,4 @@ grub-mkpasswd-pbkdf2
 #The superuser/user information and password should not be contained in the /etc/grub.d/00_header file as this file could be overwritten in a package update.
 #If there is a requirement to be able to boot/reboot without entering the password, edit /etc/grub.d/10_linux and add --unrestricted to the line CLASS=  Example: CLASS="--class gnu-linux --class gnu --class os --unrestricted"
 update-grub
-
-
-
 # Edit /etc/default/grub and add the apparmor=1 and security=apparmor parameters to the GRUB_CMDLINE_LINUX= line   GRUB_CMDLINE_LINUX="apparmor=1 security=apparmor"      Run the following command to update the grub2 configuration # update-grub    Notes: This recommendation is designed around the grub bootloader, if LILO or another bootloader is in use in your environment enact equivalent settings.
