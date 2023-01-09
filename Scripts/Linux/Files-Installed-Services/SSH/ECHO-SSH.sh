@@ -3,6 +3,7 @@ if [ $EUID -ne 0 ]; then
     echo "Run me as a superuser"
     exit 1
 fi
+
 echo "[+] Changing protocol to 2 (V1 is insecure)"
 if [ $(cat /etc/ssh/sshd_config | grep Protocol | wc -l) -eq 0 ]; then
     echo "Protocol 2" >> /etc/ssh/sshd_config

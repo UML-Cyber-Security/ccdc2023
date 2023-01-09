@@ -8,7 +8,7 @@ if [ "$EUID" -ne 0 ]
 fi
 
 # Remove deny file 
-rm /etc/at.deny # Remove deny list for at commands?, why not add all users except for the root and Admin?
+rm /etc/at.deny 
 rm /etc/cron.deny
 touch /etc/cron.allow
 touch /etc/at.allow
@@ -18,3 +18,5 @@ chmod og-rwx /etc/cron.allow
 chmod og-rwx /etc/at.allow
 chown root:root /etc/cron.allow
 chown root:root /etc/at.allow
+
+systemctl --now enable cron

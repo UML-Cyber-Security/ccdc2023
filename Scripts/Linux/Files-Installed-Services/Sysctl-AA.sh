@@ -1,3 +1,13 @@
+#! /bin/bash
+
+# Check if the scrip is ran as root.
+# $EUID is a env variable that contains the users UID
+# -ne 0 is not equal zero
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
 # Create a new Conf file, sysctl will read and parse any file ending in .conf
 touch /etc/sysctl.d/ccdc.conf
 # Change ownership (and group) to root
@@ -36,9 +46,9 @@ sysctl -w net.ipv4.route.flush=1
 
 # Disable and Stop rsync it is considered insecure
 systemctl --now disable rsync 
-# Disable and Stop nis (If it is there) --> Not needed with purge
+# Disable and Stop nis (If it is there) --> Not needed with purge?
 systemctl --now disable nis 
 
 
-# Enforce Defualt Apparmor Configuration
+# Enforce Defualt Apparmor Configuration --> will we use SELinux insted?
 aa-enforce /etc/apparmor.d/* 
