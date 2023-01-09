@@ -105,7 +105,6 @@ chmod 644 /backups/log
 # Copy logs
 cp -r /var/log /backups/log
 
-
 ## Old
   #if [ "$(awk -F':' '/bash/ { print $1}' /etc/passwd | grep $user | wc -l)" -eq 1 ];
    # then cp /home/$user/.bash_history /backups/$result

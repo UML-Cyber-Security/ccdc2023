@@ -8,8 +8,10 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-# Ownership of the message of the day
-chown root:root /etc/motd
+# Ownership of the message of the day and related files
+chown root:root /etc/motd  
+chown root:root /etc/issue 
+chown root:root /etc/issue.net 
 
 # Ownership of Password related Files
 # User:Group
@@ -29,9 +31,20 @@ chown root:root /etc/cron.daily
 chown root:root /etc/cron.weekly
 chown root:root /etc/cron.monthly
 
+# SSHD config ownership
+chown root:root /etc/ssh/sshd_config 
+# SSH Private key ownership
+find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chown root:root {} \;
+# SSH Public Keys ownership
+find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chown root:root {} \;
 
-# Permissions for Message of the day
-chmod u-x,go-wx /etc/motd 
+
+
+
+# Permissions for Message of the day and related files
+chmod u-x,go-wx /etc/motd
+chmod u-x,go-wx /etc/issue
+chmod u-x,go-wx /etc/issue.net
 
 # Permissions for Password related Files
 chmod 644 /etc/group
@@ -49,3 +62,10 @@ chmod og-rwx /etc/cron.hourly
 chmod og-rwx /etc/cron.daily
 chmod og-rwx /etc/cron.weekly
 chmod og-rwx /etc/cron.monthly
+
+#SSHD permissions 
+chmod og-rwx /etc/ssh/sshd_config
+# SSH Private key permissions 
+find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chmod 0600 {} \;
+# SSH Public Keys permissions
+find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chmod 0644 {} \; 

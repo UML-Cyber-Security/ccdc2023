@@ -5,8 +5,7 @@
 * Make it easier to add peers (File of IPs)
   * Sudo privlage 
 * Firewall Integration Script.
-  * Two, intial one and one that limits the ingress based on Ports
-  * Logs are at /var/log/glusterfs
+* Logs are at /var/log/glusterfs
   * Config in /etc/glusterfs
 
 
