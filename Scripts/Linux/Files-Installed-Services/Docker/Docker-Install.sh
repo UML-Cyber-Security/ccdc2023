@@ -28,7 +28,7 @@ done
 
 echo "Pkage manager is "$PKG
 
-if [ "$PKG" = "apt-get" ]
+if [ "$PKG" = "apt-get" ]; then
     # Remove old version? 
     # sudo apt-get remove docker docker-engine docker.io containerd runc
     

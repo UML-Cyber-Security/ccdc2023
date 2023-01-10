@@ -8,6 +8,7 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
+export DEBIAN_FRONTEND=noninteractive
 # Stolen from online. Differnet package managers
 # Declare an array, and map values 
 declare -A osInfo;
@@ -28,6 +29,9 @@ done
 
 echo "Pkage manager is "$PKG
 
+if [ "$PKG" = "apt-get" ]; then 
+    export DEBIAN_FRONTEND=noninteractive
+elif 
 #################### UPDATE
 # Download list of packages to update.
 $PKG update

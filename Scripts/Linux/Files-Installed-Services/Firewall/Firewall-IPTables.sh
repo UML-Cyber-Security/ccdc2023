@@ -458,8 +458,12 @@ if ! [[ -x "$(command -v docker)" ]]; then
     echo "Docker is not installed, exiting script!"
     echo "Saving Firewall Rules"
     if [ -f "/etc/debian_version" ]; 
-      then iptables-save /etc/iptables/rules.v4
-      else iptables-save /etc/sysconfig/iptables
+      then
+        iptables-save > /etc/iptables/rules.v4
+        ip6tables-save > /etc/iptables/rules.v6
+      else
+        iptables-save > /etc/sysconfig/iptables
+        ip6tables-save > /etc/sysconfig/iptables
     fi 
     exit
 fi 
