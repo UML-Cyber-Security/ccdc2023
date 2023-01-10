@@ -54,7 +54,7 @@
 
     - name: Running suricata 
       ansible.builtin.command: suricata-update 
-      ansible.builtin.command: suricata-update enable-source  malsilo/win-malware
+      ansible.builtin.command:  suricata-update enable-source  malsilo/win-malware
       register: result
       
     - name: Output of Suricata update and Enabling an additional source
@@ -82,13 +82,31 @@
         state: present
       tags: changeblock
 
-  post_tasks:
-      
-    - name: Restarting Wazuh dashboard, indexer, manager, filebeat and Suricata
+    - name: Restarting Wazuh Indexer
       ansible.builtin.service:
-        name: wazuh-indexer.service
-        name: wazuh-dashboard.service
-        name: wazuh-manager.service
+        name: wazuh-indexer
+        state: restarted
+      tags: restart_services
+
+    - name: Restarting Wazuh Manager
+      ansible.builtin.service:
+        name: wazuh-manager
+        state: restarted
+      tags: restart_services
+
+    - name: Restart Wazuh Dashboard
+      ansible.builtin.service:
+        name: wazuh-dashboard
+        state: restarted
+      tags: restart_services
+    - name: Restarting Filebeat
+      ansible.builtin.service:
         name: filebeat
-        state: restarted      
-      tags: restartservices            
+        state: restarted
+      tags: restart_services
+
+    - name: Restarting  Suricata
+      ansible.builtin.service:
+        name: suricata
+      tags: restart_services
+
