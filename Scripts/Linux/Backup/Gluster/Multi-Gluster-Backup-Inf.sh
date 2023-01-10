@@ -1,9 +1,10 @@
 #! /bin/bash
 
 #++++++++++++++++
-# First argument $1 is the path to the brick to copy
-# Second Argument is the Identifier we wish to associate 
-# with it
+# First argument $1 is the path to a file containing all of the bircks to copy
+# Second Argument is the path to a file containing all of the identifiers to assocaite with the backups
+#
+# We need to have the same number of entries in each file
 #++++++++++++++++
 
 
