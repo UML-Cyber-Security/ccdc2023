@@ -1,5 +1,12 @@
-# Sysctl
-## May break systems >> refer to this for simplified docker wokeing one https://bugs.launchpad.net/ubuntu/+source/procps/+bug/1676540
+#! /bin/bash
+
+# Check if the scrip is ran as root.
+# $EUID is a env variable that contains the users UID
+# -ne 0 is not equal zero
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
 
 # Prevent ICMP IPv4 Redirects (Use when a system is not acting as a router)
 echo "net.ipv4.conf.all.send_redirects = 0" >> /etc/sysctl.d/ccdc.conf 

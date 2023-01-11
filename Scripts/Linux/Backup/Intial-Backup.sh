@@ -99,11 +99,11 @@ cp -r /var/spool/cron/crontabs /backups/configs/crontabs
 echo "[+] Backing up logs directory to /backups/logs/"
 mkdir /backups/logs
 # Change ownership of the directory to root (explicit, should inherit from parent?)
-chown root:root /backups/log
+chown root:root /backups/logs
 # Make it read-write for root but no others
-chmod 644 /backups/log
+chmod 644 /backups/logs
 # Copy logs
-cp -r /var/log /backups/log
+cp -r /var/log /backups/logs
 
 ## Old
   #if [ "$(awk -F':' '/bash/ { print $1}' /etc/passwd | grep $user | wc -l)" -eq 1 ];

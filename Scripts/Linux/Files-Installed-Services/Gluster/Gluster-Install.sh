@@ -37,8 +37,8 @@ done
 apt-get install glusterfs-server -y
 
 # Create Backups of configs
-mkdir /backups/config/gluster
-cp -r /etc/glusterfs /backups/config/gluster
+mkdir /backups/configs/gluster
+cp -r /etc/glusterfs /backups/configs/gluster
 
 # Enable and Start 
 systemctl enable glusterd
