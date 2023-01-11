@@ -4,9 +4,7 @@
 * Generalize Install Script
 * Make it easier to add peers (File of IPs)
   * Sudo privlage 
-* Firewall Integration Script.
-* Logs are at /var/log/glusterfs
-  * Config in /etc/glusterfs
+  * 
 
 
 ## Limit Brick Ports used 
@@ -15,7 +13,13 @@ Located in glusterd.vol, min is defined by base-port and max is defined by max-p
 Default Min = 49152
 Default Max = 60999
 
+**This is done by the install script!**
 
+
+The install script will also enable to Gluster chains created in the IPTables setup script
+
+
+The script also creates a **/gluster** directory in the root directory (/) this is where we can mount bricks as, we will not be using the partitions method... 
 
 ## Installation and Setup
 
@@ -46,12 +50,6 @@ Check filesystem (is it free)?
 df 
 ```
 
-# OLD WE ARE NOT DOING THIS!
-We use the **fdisk** command to partition the drive 
-```
-# see current partions 
-sudo fdisk -l
-```
 # Use directories over partitions for simplicity
 
 Make a directory, in this case we make a new directory in the root dir

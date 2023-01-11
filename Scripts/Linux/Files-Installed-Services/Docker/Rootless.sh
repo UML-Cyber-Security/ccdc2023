@@ -1,7 +1,6 @@
 #! /bin/bash
 
-# Untested -- 
-
+# Untested -- argument 1 is the user we are goint to run the docker daemon from.
 
 # Check if the scrip is ran as root.
 # $EUID is a env variable that contains the users UID
@@ -24,10 +23,10 @@ fi
 /bin/dockerd-rootless-setuptool.sh install
 
 # Run a command as a non-root user from a script ran as root.
-sudo -u <USER> systemctl --user start docker
+sudo -u $1 systemctl --user start docker
 
 # A user manager is spawned for the user at boot and kept around after logouts. This allows users who are not logged in to run long-running services
-loginctl enable-linger $(whoami)
+loginctl enable-linger $1
 
  export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
  docker context use rootless

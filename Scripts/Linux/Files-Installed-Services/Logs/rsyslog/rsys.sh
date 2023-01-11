@@ -11,7 +11,7 @@ fi
 
 # If there exists this file, it is a debian based system. Use APT
 if [ -f "/etc/debian_version" ]; then
-    apt-get -q install rsyslog -y
+    apt-get install rsyslog -y
 elif [ -f "/etc/redhat-release" ]; then
     yum install rsyslog -y
 elif [ -f "/etc/arch-release" ]; then

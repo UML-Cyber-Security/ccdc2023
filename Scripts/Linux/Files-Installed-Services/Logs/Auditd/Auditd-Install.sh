@@ -67,6 +67,11 @@ echo -e "-a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat -F auid>=
 echo -e "-w /etc/sudoers -p wa -k scope \n-w /etc/sudoers.d/ -p wa -k scope" >> /etc/audit/rules.d/ccdc.rules 
 
 ############# 2622
+
+# Sudo log (all euid=0 from uid > 1000 that are not an unset uid.
+# https://sudoedit.com/log-sudo-with-auditd/
+echo -e "-a always,exit -F arch=b32 -S execve -F euid=0 -F auid>=1000 -F auid!=-1 -F key=sudo_log \n-a always,exit -F arch=b64 -S execve -F euid=0 -F auid>=1000 -F auid!=-1 -F key=sudo_log" >> /etc/audit/rules.d/ccdc.rules
+
 # Collect kernel module loading/unloading (2623)
 #echo "-w /sbin/insmod -p x -k modules | -w /sbin/rmmod -p x -k modules | -w /sbin/modprobe -p x -k modules | -a always,exit -F arch=b64 -S init_module -S delete_module -k modules" >> /etc/audit/rules.d/ccdc.rules
 echo -e "-w /sbin/insmod -p x -k modules \n-w /sbin/rmmod -p x -k modules \n-w /sbin/modprobe -p x -k modules \n-a always,exit -F arch=b64 -S init_module -S delete_module -k modules" >> /etc/audit/rules.d/ccdc.rules

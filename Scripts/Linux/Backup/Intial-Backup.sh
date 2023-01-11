@@ -12,7 +12,7 @@ mkdir /backups
 
 # Change ownership of the directory to root
 chown root:root /backups
-# Make it read-write for root but no others
+# Make it read-write for root but read for no others
 chmod 600 /backups
 
 echo "[+] Backing up old Bash to ~/copied-bash-history"
@@ -20,7 +20,7 @@ echo "[+] Backing up old Bash to ~/copied-bash-history"
 mkdir /backups/user-histories
 # Change ownership of the directory to root (explicit, should inherit from parent?)
 chown root:root /backups/user-histories
-# Make it read-write for root but no others
+# Make it read-write for root but read for others
 chmod 644 /backups/user-histories
 
 
@@ -43,7 +43,7 @@ echo "[+] Backing up old SSH config to /backups/configs/sshd_config.backup"
 mkdir /backups/configs
 # Change ownership of the directory to root (explicit, should inherit from parent?)
 chown root:root /backups/configs
-# Make it read-write for root but no others
+# Make it read-write for root but read for others
 chmod 644 /backups/configs
 # Copy SSH Config
 cp /etc/ssh/sshd_config /backups/configs/sshd_config.backup
@@ -54,7 +54,7 @@ echo "[+] Backing up old PAM config to /backups/configs/sshd_config.backup"
 mkdir /backups/configs/pam
 # Change ownership of the directory to root (explicit, should inherit from parent?)
 chown root:root /backups/configs/pam
-# Make it read-write for root but no others
+# Make it read-write for root 
 chmod 644 /backups/configs/pam
 # Copy to config directory 
 if [ -d "/etc/pam.d" ]; then
@@ -68,7 +68,7 @@ echo "[+] Backing up old Firewall configs to /backups/firewall"
 mkdir /backups/firewall
 # Change ownership of the directory to root (explicit, should inherit from parent?)
 chown root:root /backups/firewall
-# Make it read-write for root but no others
+# Make it read-write for root but read for others
 chmod 644 /backups/firewall
 # Copy to config directory 
 if [ -d "/etc/iptables/" ]; then 
@@ -90,7 +90,7 @@ echo "[+] Backing up Crontab configs to /backups/crontabs/"
 mkdir /backups/configs/crontabs
 # Change ownership of the directory to root (explicit, should inherit from parent?)
 chown root:root /backups/configs/crontabs
-# Make it read-write for root but no others
+# Make it read-write for root but read for others
 chmod 644 /backups/configs/crontabs
 # Copy User Configurations 
 cp -r /var/spool/cron/crontabs /backups/configs/crontabs
@@ -100,10 +100,33 @@ echo "[+] Backing up logs directory to /backups/logs/"
 mkdir /backups/logs
 # Change ownership of the directory to root (explicit, should inherit from parent?)
 chown root:root /backups/logs
-# Make it read-write for root but no others
+# Make it read-write for root but read for others
 chmod 644 /backups/logs
 # Copy logs
 cp -r /var/log /backups/logs
+
+# glusterfs configs
+if [ -d "/etc/glusterfs" ]; then 
+
+  mkdir /backups/configs/gluster
+  # Change ownership of the directory to root (explicit, should inherit from parent?)
+  chown root:root /backups/configs/gluster
+  # Make it read-write for root but only read for others
+  chmod 644 /backups/configs/gluster
+  # Copy entire directory (I am lazy, most all of it is configurable)
+  cp -r /etc/glusterfs/ /backups/configs/gluster/
+fi
+
+# UFW Configs 
+if [ -d "/etc/ufw" ]; then 
+  mkdir /backups/configs/ufw
+  # Change ownership of the directory to root (explicit, should inherit from parent?)
+  chown root:root /backups/configs/ufw
+  # Make it read-write for root but only read for others
+  chmod 644 /backups/configs/ufw
+  # Copy entire directory (I am lazy, most all of it is configurable)
+  cp -r /etc/ufw/user.rules /backups/configs/ufw/user.rules 
+fi
 
 ## Old
   #if [ "$(awk -F':' '/bash/ { print $1}' /etc/passwd | grep $user | wc -l)" -eq 1 ];

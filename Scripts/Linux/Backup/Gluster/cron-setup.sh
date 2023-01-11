@@ -12,7 +12,10 @@ fi
 # Write out current crontab
 # echo new cron job 
 # Run the job whenver the minuets are 0 or 30
-crontab -l | { cat && echo "0,30 * * * * ./Gluster-Backup<>"} | crontab -
+crontab -l > new-cron
+echo "0,30 * * * * ./Gluster-Backup <>" >> new-cron
+crontab new-cron
+rm new-cron
 #install new cron file
-crontab mycron
-rm mycron
+#crontab mycron
+#rm mycron

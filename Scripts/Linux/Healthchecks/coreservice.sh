@@ -29,7 +29,9 @@ if [ "$(systemctl status cron | grep "active (running)" | wc -l)" -eq 0 ]; then
     logger -t "[Health-Check-Cron]" "Service is incative"
 fi
 
-
+if [ "$(systemctl status wazuh-agent | grep "active (running)" | wc -l)" -eq 0 ]; then 
+    logger -t "[Health-Wazuh-Agent]" "Service is incative"
+fi
 
 # auditd -- make sure all rules are loaded
 if [ "$(auditctl -l | wc -l )" -ne 39 ]; then 

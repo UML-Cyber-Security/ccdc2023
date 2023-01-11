@@ -181,7 +181,6 @@ ip6tables -t mangle -I PREROUTING -m conntrack --ctstate INVALID -j INVALID-LOG
 
 # ------------------------------------------------ INPUT chain ---------------------------------------------------------------
 
-
 ####### Loop back interface Impersonation (Would we like to log this?
 #### IPv4
 iptables -A INPUT -s 127.0.0.1/8 ! -i lo -j DROP
@@ -361,7 +360,7 @@ ip6tables -A OUTPUT -p tcp --dport 80 -j ACCEPT
 ip6tables -A OUTPUT -p tcp --sport 443 -j ACCEPT
 ip6tables -A OUTPUT -p tcp --sport 80 -j ACCEPT
 
-###### Wahzu 
+###### Wahzuh 
 ## IPv4
 iptables -A OUTPUT -p tcp --sport 1514 -j ACCEPT
 iptables -A OUTPUT -p tcp --dport 1514 -j ACCEPT

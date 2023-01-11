@@ -106,7 +106,7 @@ update-grub
 
 
 
-# Set log level to verbose 
+# Set log level to verbose --already done
 if [ "$(grep 'LogLevel' /etc/ssh/sshd_config | wc -l)" -ne 0 ]; then
   sed -i 's/.*\(LogLevel\).*/\1 VERBOSE/g' /etc/ssh/sshd_config
 else
@@ -129,12 +129,12 @@ usermod -g 0 root
 # changes (e.g. permissions) and tag them with the identifier "identity" in the audit log file.
 echo " -w /etc/group -p wa -k identity | -w /etc/passwd -p wa -k identity | -w /etc/gshadow -p wa -k identity | -w /etc/shadow -p wa -k identity | -w /etc/security/opasswd -p wa -k identity" >> /etc/audit/rules.d/ccdc.rules
 
-# Record changes to network environment files or system calls. Sethostname or setdomainnam system calls
-echo "-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale -w /etc/issue -p wa -k system-locale -w /etc/issue.net -p wa -k system-locale -w /etc/hosts -p wa -k system-locale -w /etc/network -p wa -k system-locale | -a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale -a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale -w /etc/issue -p wa -k system-locale -w /etc/issue.net -p wa -k system-locale -w /etc/hosts -p wa -k system-locale -w /etc/network -p wa -k system-locale." >> /etc/audit/rules.d/ccdc.rules
+# Record changes to network environment files or system calls. Sethostname or setdomainnam system calls-- Already Done
+#echo "-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale -w /etc/issue -p wa -k system-locale -w /etc/issue.net -p wa -k system-locale -w /etc/hosts -p wa -k system-locale -w /etc/network -p wa -k system-locale | -a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale -a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale -w /etc/issue -p wa -k system-locale -w /etc/issue.net -p wa -k system-locale -w /etc/hosts -p wa -k system-locale -w /etc/network -p wa -k system-locale." >> /etc/audit/rules.d/ccdc.rules
 
 # Sudo log (all euid=0 from uid > 1000 that are not an unset uid.
 # https://sudoedit.com/log-sudo-with-auditd/
-echo "-a always,exit -F arch=b32 -S execve -F euid=0 -F auid>=1000 -F auid!=-1 -F key=sudo_log | -a always,exit -F arch=b64 -S execve -F euid=0 -F auid>=1000 -F auid!=-1 -F key=sudo_log" >> /etc/audit/rules.d/ccdc.rules
+echo "-a always,exit -F arch=b32 -S execve -F euid=0 -F auid>=1000 -F auid!=-1 -F key=sudo_log \n-a always,exit -F arch=b64 -S execve -F euid=0 -F auid>=1000 -F auid!=-1 -F key=sudo_log" >> /etc/audit/rules.d/ccdc.rules
 
 
 

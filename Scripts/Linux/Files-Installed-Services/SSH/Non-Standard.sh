@@ -15,18 +15,57 @@ else
     sed -i "s/^\(.Port.*\)/Port $PORTNUM/g" /etc/ssh/sshd_config
 fi
 
+if [ "$(sshd -t | wc -l)" -ne 0 ]; then
+    echo "Error in configuration file aborting"
+    exit
+fi
+
+echo "[!!] Adding new SSH rules"
+####### SSH
+#### IPv4
+# Accept SSH Connections
+iptables -I INPUT -p tcp --dport $PORTNUM -j ACCEPT
+# Log any SSH connection attempt
+iptables -I INPUT -m conntrack -p tcp --dport $PORTNUM --ctstate NEW -j SSH-INITIAL-LOG
+
+
+#### IPv6
+# Accept SSH Connections
+ip6tables -I INPUT -p tcp --dport $PORTNUM -j ACCEPT
+# Log any SSH connection attempt
+ip6tables -I INPUT -m conntrack -p tcp --dport $PORTNUM --ctstate NEW -j SSH-INITIAL-LOG
+
+## IPv4
+# Accept SSH Connections
+iptables -I OUTPUT -p tcp --sport $PORTNUM -j ACCEPT 
+# Log any SSH connection attempt, this is here because it would be odd to do something like this in an outgoing connection
+iptables -I OUTPUT -m conntrack -p tcp --dport $PORTNUM --ctstate NEW -j SSH-INITIAL-LOG
+
+
+##IPv6
+# Accept SSH Connections
+ip6tables -I OUTPUT -p tcp --sport $PORTNUM -j ACCEPT 
+# Log any SSH connection attempt, this is here because it would be odd to do something like this in an outgoing connection
+ip6tables -I OUTPUT -m conntrack -p tcp --dport $PORTNUM --ctstate NEW -j SSH-INITIAL-LOG
+
 echo "[!!] Removing old SSH rules"
 
 # Old method
 #INPUTSSH="$(iptables -nv -L INPUT --line-number | grep "22" | awk -F " " '{print $1 }')"
 # awk can do regex evlauation, $0 refers to the input line "~" is the regex operator, 
 # and -v sets a varable re we can refer to
-INPUTSSH="$(iptables -nv -L INPUT --line-number | awk -v re="22" -F " " '$0 ~ re {print $1 }')"
+readarray -t INPUTSSH < <(iptables -nv -L FORWARD --line-number | awk -v re="22" -F " " '$0 ~ re {print $1 }')
 # Iterate and remove
+for index in ${!INPUTSSH[@]}; do 
+    #printf "$((${INPUTSSH[index]}-$index))\n"
+    iptables -D FORWARD $((${INPUTSSH[index]}-$index))
+done 
 
 # Replace with basic rules (SSHLOG -> accep)
-OUTPUTSSH="$(iptables -nv -L OUTPUT --line-number | awk -v re="22" -F " " '$0 ~ re {print $1 }')"
+readarray -t OUTPUTSSH < <(iptables -nv -L FORWARD --line-number | awk -v re="22" -F " " '$0 ~ re {print $1 }')
 # Iterate and remove 
-# Repace with allow. outbouand (To PORT /from out PORT)
-#FORWARDSSH="$(iptables -nv -L FORWARD --line-number | awk -v re="22" -F " " '$0 ~ re {print $1 }')"
-# Iterate and remove
+for index in ${!INPUTSSH[@]}; do 
+    #printf "$((${INPUTSSH[index]}-$index))\n"
+    iptables -D FORWARD $((${INPUTSSH[index]}-$index))
+done 
+

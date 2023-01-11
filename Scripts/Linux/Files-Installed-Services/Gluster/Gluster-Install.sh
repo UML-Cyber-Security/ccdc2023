@@ -48,6 +48,16 @@ systemctl start glusterd
 sed -i 's/.*base-port.*/   option base-port 49152/g' /etc/glusterfs/glusterd.vol
 sed -i 's/.*max-port.*/    option max-port 49162/g' /etc/glusterfs/glusterd.vol
 
+# Create backup
+mkdir -p /backups/configs/gluster
+# Change ownership of the directory to root (explicit, should inherit from parent?)
+chown root:root /backups/configs/gluster
+# Make it read-write for root but only read for others
+chmod 644 /backups/configs/gluster
+# Copy entire directory (I am lazy, most all of it is configurable)
+cp -r /etc/glusterfs/ /backups/configs/gluster/
+
+
 GLUSTER=$(iptables -nvL | grep "GLUSTER" | wc -l ) 
 echo $GLUSTER
 if [ "$GLUSTER" != 0 ]
