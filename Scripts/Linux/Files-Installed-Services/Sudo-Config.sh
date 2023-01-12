@@ -1,3 +1,8 @@
+#!/bin/bash
+if [ $EUID -ne 0 ]; then
+    echo "Run me as a superuser"
+    exit 1
+fi
 
 # This was in the other script forgot to move it over 
 echo 'Defaults use_pty' | EDITOR="tee -a" visudo

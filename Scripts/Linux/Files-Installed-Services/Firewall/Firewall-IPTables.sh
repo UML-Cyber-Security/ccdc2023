@@ -78,18 +78,18 @@ ip6tables -t mangle -A INVALID-LOG -j DROP
 ## IPv4
 # Make Chain to prevent ping flooding
 iptables -N ICMP-FLOOD
-# Make Chain for Gluster-IN Rules (Optional)
-iptables -N GLUSTER-IN
-# Make Chain for Gluster-OUT Rules (Optional)
-iptables -N GLUSTER-OUT
+# # Make Chain for Gluster-IN Rules (Optional)
+# iptables -N GLUSTER-IN
+# # Make Chain for Gluster-OUT Rules (Optional)
+# iptables -N GLUSTER-OUT
 
 ## IPv6
 # Make Chain to prevent ping flooding
 ip6tables -N ICMP-FLOOD
-# Make Chain for Gluster-IN Rules (Optional)
-ip6tables -N GLUSTER-IN
-# Make Chain for Gluster-OUT Rules (Optional)
-ip6tables -N GLUSTER-OUT
+# # Make Chain for Gluster-IN Rules (Optional)
+# ip6tables -N GLUSTER-IN
+# # Make Chain for Gluster-OUT Rules (Optional)
+# ip6tables -N GLUSTER-OUT
 # -------------------------------------------------------------------------------------------------------------------
 
 # -------------------------------------- Setup ICMP-FLOOD Chain      ------------------------------------------------
@@ -119,50 +119,47 @@ ip6tables -A ICMP-FLOOD -m recent --update --seconds 1 --hitcount 6 --name ICMP-
 ip6tables -A ICMP-FLOOD -j ACCEPT
 # -------------------------------------------------------------------------------------------------------------------
 
-# --------------------------------------    Setup GLUSTER Chain      ------------------------------------------------
-## IPv4
-### IN
-# Gluster Management Ports -- they mention TCP and UDP
-iptables -A GLUSTER-IN -p tcp -m multiport --dport 24007,24008 -m conntrack --ctstate NEW -j ACCEPT
-# Gluster Brick Ports (May be randomized in range after gluster 10)
-iptables -A GLUSTER-IN -p tcp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT
-# iptables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
+# # --------------------------------------    Setup GLUSTER Chain      ------------------------------------------------
+# ## IPv4
+# ### IN
+# # Gluster Management Ports -- they mention TCP and UDP
+# iptables -A GLUSTER-IN -p tcp -m multiport --dport 24007,24008 -m conntrack --ctstate NEW -j ACCEPT
+# # Gluster Brick Ports (May be randomized in range after gluster 10)
+# iptables -A GLUSTER-IN -p tcp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT
+# # iptables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
 
-### OUT --> Pain we may have to deal with traffic to a gluster management port, or from a gluster port (responce)
-iptables -A GLUSTER-OUT -p tcp -m multiport --sport 24007,24008 -j ACCEPT
-# Gluster Brick Ports (May be randomized in range after gluster 10)
-iptables -A GLUSTER-OUT -p tcp -m multiport --sport 49152:49162 -j ACCEPT
-# iptables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
-# Gluster Management Ports -- they mention TCP and UDP
-iptables -A GLUSTER-OUT -p tcp -m multiport --dport 24007,24008 -j ACCEPT
-# Gluster Brick Ports (May be randomized in range after gluster 10)
-iptables -A GLUSTER-OUT -p tcp -m multiport --dport 49152:49251 -j ACCEPT
-# iptables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
-
-
-## IPv6
-### IN
-# Gluster Management Ports -- they mention TCP and UDP
-ip6tables -A GLUSTER-IN -p tcp -m multiport --dport 24007:24008 -m conntrack --ctstate NEW -j ACCEPT
-# Gluster Brick Ports (May be randomized in range after gluster 10
-ip6tables -A GLUSTER-IN -p tcp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT
-# ip6tables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
-
-### OUT --> Pain we may have to deal with traffic to a gluster management port, or from a gluster port (responce)
-# Gluster Management Ports -- they mention TCP and UDP
-ip6tables -A GLUSTER-OUT -p tcp -m multiport --sport 24007:24008 -j ACCEPT
-# Gluster Brick Ports (May be randomized in range after gluster 10
-ip6tables -A GLUSTER-OUT -p tcp -m multiport --sport 49152:49162 -j ACCEPT
-# ip6tables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
-# Gluster Management Ports -- they mention TCP and UDP
-ip6tables -A GLUSTER-OUT -p tcp -m multiport --dport 24007:24008 -j ACCEPT
-# Gluster Brick Ports (May be randomized in range after gluster 10
-ip6tables -A GLUSTER-OUT -p tcp -m multiport --dport 49152:49162 -j ACCEPT
-# ip6tables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
+# ### OUT --> Pain we may have to deal with traffic to a gluster management port, or from a gluster port (responce)
+# iptables -A GLUSTER-OUT -p tcp -m multiport --sport 24007,24008 -j ACCEPT
+# # Gluster Brick Ports (May be randomized in range after gluster 10)
+# iptables -A GLUSTER-OUT -p tcp -m multiport --sport 49152:49162 -j ACCEPT
+# # iptables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
+# # Gluster Management Ports -- they mention TCP and UDP
+# iptables -A GLUSTER-OUT -p tcp -m multiport --dport 24007,24008 -j ACCEPT
+# # Gluster Brick Ports (May be randomized in range after gluster 10)
+# iptables -A GLUSTER-OUT -p tcp -m multiport --dport 49152:49251 -j ACCEPT
+# # iptables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
 
 
+# ## IPv6
+# ### IN
+# # Gluster Management Ports -- they mention TCP and UDP
+# ip6tables -A GLUSTER-IN -p tcp -m multiport --dport 24007:24008 -m conntrack --ctstate NEW -j ACCEPT
+# # Gluster Brick Ports (May be randomized in range after gluster 10
+# ip6tables -A GLUSTER-IN -p tcp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT
+# # ip6tables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
 
-# -------------------------------------------------------------------------------------------------------------------
+# ### OUT --> Pain we may have to deal with traffic to a gluster management port, or from a gluster port (responce)
+# # Gluster Management Ports -- they mention TCP and UDP
+# ip6tables -A GLUSTER-OUT -p tcp -m multiport --sport 24007:24008 -j ACCEPT
+# # Gluster Brick Ports (May be randomized in range after gluster 10
+# ip6tables -A GLUSTER-OUT -p tcp -m multiport --sport 49152:49162 -j ACCEPT
+# # ip6tables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
+# # Gluster Management Ports -- they mention TCP and UDP
+# ip6tables -A GLUSTER-OUT -p tcp -m multiport --dport 24007:24008 -j ACCEPT
+# # Gluster Brick Ports (May be randomized in range after gluster 10
+# ip6tables -A GLUSTER-OUT -p tcp -m multiport --dport 49152:49162 -j ACCEPT
+# # ip6tables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
+# # -------------------------------------------------------------------------------------------------------------------
 
 
 # ------------------------------------------------ MANGLE tb, PREROUTING chain -----------------------------------------------

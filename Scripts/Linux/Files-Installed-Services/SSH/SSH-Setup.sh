@@ -83,6 +83,8 @@ if [ $(cat /etc/ssh/sshd_config | grep LoginGraceTime | wc -l) -eq 0 ]; then
 else
     sed -i '/UsePAM /c\UsePAM yes' /etc/ssh/sshd_config
 fi
+
+### May not want this if we are going to use SSH tunneling
 echo "[+] Disabling TCP Forwarding"
 if [ $(cat /etc/ssh/sshd_config | grep AllowTcpForwarding | wc -l) -eq 0 ]; then
     echo "AllowTcpForwarding no" >> /etc/ssh/sshd_config

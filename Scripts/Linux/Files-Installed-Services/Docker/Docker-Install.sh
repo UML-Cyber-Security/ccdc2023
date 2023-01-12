@@ -29,6 +29,7 @@ done
 echo "Pkage manager is "$PKG
 
 if [ "$PKG" = "apt-get" ]; then
+    export DEBIAN_FRONTEND=noninteractive
     # Remove old version? 
     # sudo apt-get remove docker docker-engine docker.io containerd runc
     

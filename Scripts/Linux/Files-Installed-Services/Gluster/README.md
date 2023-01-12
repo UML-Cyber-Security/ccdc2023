@@ -16,8 +16,7 @@ Default Max = 60999
 **This is done by the install script!**
 
 
-The install script will also enable to Gluster chains created in the IPTables setup script
-
+The install script will also create the Gluster chains created and append them to the IPTables chains to allow for access.
 
 The script also creates a **/gluster** directory in the root directory (/) this is where we can mount bricks as, we will not be using the partitions method... 
 

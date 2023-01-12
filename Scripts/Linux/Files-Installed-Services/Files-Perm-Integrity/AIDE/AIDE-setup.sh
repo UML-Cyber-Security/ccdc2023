@@ -11,14 +11,22 @@ fi
 
 # install aide -- Can this be automated
 # ubuntu
-echo aide-common aideinit/copynew boolean false | debconf-set-selections
-echo aide-common aide/aideinit boolean false | debconf-set-selections
-echo aide-common aideinit/overwritenew boolean true | debconf-set-selections
-apt install aide aide-common -y
-aideinit
-mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+#echo aide-common aideinit/copynew boolean false | debconf-set-selections
+#echo aide-common aide/aideinit boolean false | debconf-set-selections
+#echo aide-common aideinit/overwritenew boolean true | debconf-set-selections
 
+# Install AIDE
+export DEBIAN_FRONTEND=noninteractive
+apt install aide aide-common -y # Works
 
+# Initalize AIDE database
+aideinit # Works
+
+# Move new database to working set
+mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db # Works
+
+# Configure AIDE service
+aide --config /etc/aide/aide.conf --init # This works
 
 cp ./config/aidecheck.service /etc/systemd/system/aidecheck.service
 cp ./config/aidecheck.timer /etc/systemd/system/aidecheck.timer   

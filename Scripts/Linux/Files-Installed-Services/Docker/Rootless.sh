@@ -11,12 +11,13 @@ if [ "$EUID" -ne 0 ]
 fi
 
 if [ -f /etc/debian_version ]; then 
-    apt-get install -y dbus-user-session
-    apt-get install -y docker-ce-rootless-extras
+  export DEBIAN_FRONTEND=noninteractive
+  apt-get install -y dbus-user-session
+  apt-get install -y docker-ce-rootless-extras
 elif [ -f /etc/redhat-release ]; then
-    dnf install -y fuse-overlayfs
-    # The docs still use apt, so I just changed that to dnf
-    dnf install -y docker-ce-rootless-extras
+  dnf install -y fuse-overlayfs
+  # The docs still use apt, so I just changed that to dnf
+  dnf install -y docker-ce-rootless-extras
 fi
 
 # Setup rootless daemon

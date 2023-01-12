@@ -53,6 +53,7 @@ if [ "$PKG" = "apt-get" ]; then
     apt-get install sudo -y
     # $PKG install ufw -y
 
+    sudo apt-get purge ftp -y
     apt-get purge autofs -y
     apt-get purge telnet -y
     apt-get purge nis -y
@@ -62,6 +63,7 @@ elif [ "$PKG" = "yum" ]; then
     yum install python3 -y
     yum install sudo -y
 
+    yum remove ftp -y
     yum remove autofs -y
     yum remove telnet -y
     yum remove nis -y
@@ -78,6 +80,7 @@ elif [ "$PKG" = "apk" ]; then
     echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers.d/wheel
 
     # Appears that apk will not ask for confirmation unless you use the --interactive flag
+    apk del ftp
     apk del autofs 
     apk del telnet
     apk del nis

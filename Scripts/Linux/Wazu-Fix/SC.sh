@@ -89,7 +89,7 @@ apt purge snmpd
 # Remove RPC client
 apt purge rpcbind
 
-# Disable IPv6
+############## Disable IPv6
 #Edit /etc/default/grub and add ipv6.disable=1 to the GRUB_CMDLINE_LINUX parameters: GRUB_CMDLINE_LINUX="ipv6.disable=1" Run the following command to update the grub2 configuration: # update-grub
 if [ "$(grep 'GRUB_CMDLINE_LINUX=.*' | wc -l)" -ne 0 ]; then
   sed "s/GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"ipv6.disable=1\"/g"  /etc/default/grub
@@ -102,7 +102,7 @@ update-grub
 
 
 # Disable wireless interfaces 
-# nmcli radio all off # Not needed 
+# nmcli radio all off # Not needed?
 
 
 
@@ -169,24 +169,6 @@ fi
 
 
 
-# PAM -- need to do this 
-#Ensure password creation requirements are configured.	-
-#Ensure lockout for failed password attempts is configured.	-
-#Ensure password reuse is limited.	-
-#Ensure password hashing algorithm is SHA-512.	-
-#Ensure minimum days between password changes is configured.	-
-#Ensure password expiration is 365 days or less.	-
-#Ensure password expiration warning days is 7 or more.	-
-#Ensure inactive password lock is 30 days or less.	useradd -D
-#Ensure default group for the root account is GID 0.	-
-#Ensure default user umask is 027 or more restrictive.	sh -c "umask"
-#Ensure default user shell timeout is 900 seconds or less.	-
-
-
-
-# Password This
-#Ensure password fields are not empty.	-
-#Ensure root is the only UID 0 account.	-
 #Ensure shadow group is empty.	 sh -c "awk -F: -v GID=\"$(awk -F: '($1==\"shadow\") {print $3}' /etc/group)\" '($4==GID) {print $1}' /etc/passwd"
 
 

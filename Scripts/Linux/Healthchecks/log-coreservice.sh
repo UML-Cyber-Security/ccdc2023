@@ -1,4 +1,9 @@
 #! /bin/bash
+#!/bin/bash
+if [ $EUID -ne 0 ]; then
+    echo "Run me as a superuser"
+    exit 1
+fi
 
 #if [ -f /var/log/health-check.log ]; then 
 #    touch /var/log/health-check.log
