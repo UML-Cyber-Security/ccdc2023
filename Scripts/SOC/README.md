@@ -31,11 +31,23 @@ We are going to deploy Wazuh on a single node initally and it can be done by run
 
 ## **Deploying Suricata**
 
-To deploy suricata and integrate it with Wazuh, run the below command
+To deploy suricata and integrate it with Wazuh, run the below command. This will also integrate docker logs into Wazuh.
 
 ``` ansible-playbook -vvv suricata.yml ```
 
 We are running the playbooks in verbose mode to be careful when deploying and it is easier to debug when in verbose mode.
+
+## **Enabling Debian Agents to send Docker logs to the server**
+
+To enable the Debian Agents to send docker logs to the wazuh server, run the following command
+
+``` ansible-playbook docker _agent.yml ```
+
+## **Enabling CentOS Agents to send Docker logs to the server**
+
+To enable the CentOS Agents to send docker logs to the wazuh server, run the following command
+
+``` ansible-playbook docker-agent.yml -i CentOS_Agents ```
 
 ## **Using tags to restart services**
 

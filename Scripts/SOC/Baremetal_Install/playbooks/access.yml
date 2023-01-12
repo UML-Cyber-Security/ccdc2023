@@ -8,19 +8,19 @@
 
   - name: Adding an user who will be provisioning the services on the remote host
     ansible.builtin.user:
-      name: ansible-admin
+      name: uml-admin
       group: sudo
       shell: /bin/bash
     become: true
 
   - name: Copying the SSH key to the remote system to login without a password
     authorized_key:
-      user: ansible-admin
+      user:  uml-admin
       key: "{{ lookup('file', '~/.ssh/ansibleid_rsa.pub') }}"
 
   - name: Copying the sudoers file to remote system to prevent using sudo password
     copy:
-      src: ansibleadmin
+      src: sudoers_uml
       dest: /etc/sudoers.d/ansible-admin
       owner: root
       group: root

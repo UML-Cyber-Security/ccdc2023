@@ -70,7 +70,7 @@
         var: output
 
 
-    - name: Integrating Wazuh and Suricata 
+    - name: Integrating Wazuh and Suricata and enabling docker logs 
       ansible.builtin.blockinfile:
         path: /var/ossec/etc/ossec.conf
         block: |4
@@ -78,6 +78,9 @@
                 <log_format>json</log_format>
                 <location>/var/log/suricata/eve.json</location>
               </localfile>
+               <wodle name="docker-listener">
+                <disabled>no</disabled>
+              </wodle>
         insertafter: '<!-- Files to monitor' 
         state: present
       tags: changeblock
