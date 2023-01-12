@@ -1,6 +1,6 @@
 ---
 
-- hosts: all
+- hosts: SOC_Server
   become: true
   
 
@@ -12,10 +12,7 @@
 
     - name: Making sure  wazuh is up and running on the remote machine 
       ansible.builtin.service:
-        name: wazuh-indexer.service
-        name: wazuh-dashboard.service
-        name: wazuh-manager.service
-        name: filebeat
+        name: wazuh-manager
         state: started
           
   tasks:
@@ -49,28 +46,41 @@
       ansible.builtin.copy:
         src: /tmp/rules/
         dest: /etc/suricata/rules/
-        mode: '640'
+        mode: '0640'
         remote_src: true
+    - name: Enabling community guidelines
+      ansible.builtin.lineinfile:
+        path: /etc/suricata/suricata.yaml
+        regexp: 'community-id:'
+        line: "      community-id: true"
+        state: present
+      tags:  changeline
 
-    - name: Running suricata 
+    - name: Starting and enabling suricata
+      ansible.builtin.service:
+        name: suricata
+        state: started
+        enabled: yes
+
+    - name: Running suricata and enabling an additional set of available rules  
       ansible.builtin.command: suricata-update 
-      ansible.builtin.command:  suricata-update enable-source  malsilo/win-malware
       register: result
       
+    - name: Enabling additional set of resources
+      ansible.builtin.command: suricata-update enable-source  malsilo/win-malware
     - name: Output of Suricata update and Enabling an additional source
       ansible.builtin.debug:
         var: result
  
     - name: Testing Suricata
       ansible.builtin.command: suricata -T -c /etc/suricata/suricata.yaml -v 
-      register: output
-      
+      register: output 
     - name: Output of testing Suricata
       ansible.builtin.debug:
         var: output
 
 
-    - name: Integrating Wazuh and Suricata and enabling docker logs 
+    - name: Integrating Docker and Suricata with Wazuh 
       ansible.builtin.blockinfile:
         path: /var/ossec/etc/ossec.conf
         block: |4
@@ -78,12 +88,26 @@
                 <log_format>json</log_format>
                 <location>/var/log/suricata/eve.json</location>
               </localfile>
-               <wodle name="docker-listener">
+              <wodle name="docker-listener">
                 <disabled>no</disabled>
               </wodle>
+              <localfile>
+                <log_format>syslog</log_format>
+                <location>/var/log/sudo.log</location>
+              </localfile>
+              <localfile>
+                <log_format>syslog</log_format>
+                <location>/var/log/glusterfs/glusterd.log</location>
+                </localfile>
+
+              <localfile> 
+                <log_format>syslog</log_format>
+                <location>/var/log/glusterfs/cli.log</location>
+              </localfile>
         insertafter: '<!-- Files to monitor' 
         state: present
       tags: changeblock
+      
 
     - name: Restarting Wazuh Indexer
       ansible.builtin.service:
@@ -96,7 +120,7 @@
         name: wazuh-manager
         state: restarted
       tags: restart_services
-
+    
     - name: Restart Wazuh Dashboard
       ansible.builtin.service:
         name: wazuh-dashboard
@@ -112,4 +136,4 @@
       ansible.builtin.service:
         name: suricata
       tags: restart_services
-
+          

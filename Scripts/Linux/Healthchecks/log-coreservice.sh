@@ -13,31 +13,31 @@ fi
 
 # Create log if docker is not running
 if [ "$(systemctl status docker | grep "active (running)" | wc -l)" -eq 0 ]; then 
-    logger -t "[Health-Check-Docker]" " Service is incative"
+    logger -t "[Health-Check-Docker]" " Service is inactive"
 fi
 # create log if auditd is not running
 if [ "$(systemctl status auditd | grep "active (running)" | wc -l)" -eq 0 ]; then 
-    logger -t "[Health-Check-Auditd]" "Service is incative"
+    logger -t "[Health-Check-Auditd]" "Service is inactive"
 fi
 # create log if gluster is not running
 if [ "$(systemctl status glusterd | grep "active (running)" | wc -l)" -eq 0 ]; then 
-    logger -t "[Health-Check-Glusterd]" "Service is incative"
+    logger -t "[Health-Check-Glusterd]" "Service is inactive"
 fi
 # create log if sshd is not running
 if [ "$(systemctl status sshd | grep "active (running)" | wc -l)" -eq 0 ]; then 
-    logger -t "[Health-Check-SSHD]" "Service is incative"
+    logger -t "[Health-Check-SSHD]" "Service is inactive"
 fi
 # create log if cron is not running
 if [ "$(systemctl status cron | grep "active (running)" | wc -l)" -eq 0 ]; then 
-    logger -t "[Health-Check-Cron]" "Service is incative"
+    logger -t "[Health-Check-Cron]" "Service is inactive"
 fi
 # create log if wazuh-agent is not running
 if [ "$(systemctl status wazuh-agent | grep "active (running)" | wc -l)" -eq 0 ]; then 
-    logger -t "[Health-Check-Wazuh-Agent]" "Service is incative"
+    logger -t "[Health-Check-Wazuh-Agent]" "Service is inactive"
 fi
 # Create log if rsyslog is not running
 if [ "$(systemctl status rsyslog | grep "active (running)" | wc -l)" -eq 0 ]; then 
-    logger -t "[Health-Check-Rsyslog]" "Service is incative"
+    logger -t "[Health-Check-Rsyslog]" "Service is inactive"
 fi
 
 # auditd -- make sure all rules are loaded
