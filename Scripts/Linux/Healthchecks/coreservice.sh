@@ -1,41 +1,43 @@
 #! /bin/bash
 
-if [ -f /var/log/health-check.log ]; then 
-    touch /var/log/health-check.log
-    chmod 644 /var/log/health-check.log
-    chown root:root /var/log/health-check.log
-fi
+#if [ -f /var/log/health-check.log ]; then 
+#    touch /var/log/health-check.log
+#    chmod 644 /var/log/health-check.log
+#    chown root:root /var/log/health-check.log
+#fi
 
-# Get the system's IP address 
-IP4="$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)"
-
+# Create log if docker is not running
 if [ "$(systemctl status docker | grep "active (running)" | wc -l)" -eq 0 ]; then 
     logger -t "[Health-Check-Docker]" " Service is incative"
 fi
-
+# create log if auditd is not running
 if [ "$(systemctl status auditd | grep "active (running)" | wc -l)" -eq 0 ]; then 
     logger -t "[Health-Check-Auditd]" "Service is incative"
 fi
-
+# create log if gluster is not running
 if [ "$(systemctl status glusterd | grep "active (running)" | wc -l)" -eq 0 ]; then 
     logger -t "[Health-Check-Glusterd]" "Service is incative"
 fi
-
+# create log if sshd is not running
 if [ "$(systemctl status sshd | grep "active (running)" | wc -l)" -eq 0 ]; then 
     logger -t "[Health-Check-SSHD]" "Service is incative"
 fi
-
+# create log if cron is not running
 if [ "$(systemctl status cron | grep "active (running)" | wc -l)" -eq 0 ]; then 
     logger -t "[Health-Check-Cron]" "Service is incative"
 fi
-
+# create log if wazuh-agent is not running
 if [ "$(systemctl status wazuh-agent | grep "active (running)" | wc -l)" -eq 0 ]; then 
-    logger -t "[Health-Wazuh-Agent]" "Service is incative"
+    logger -t "[Health-Check-Wazuh-Agent]" "Service is incative"
+fi
+# Create log if rsyslog is not running
+if [ "$(systemctl status rsyslog | grep "active (running)" | wc -l)" -eq 0 ]; then 
+    logger -t "[Health-Check-Rsyslog]" "Service is incative"
 fi
 
 # auditd -- make sure all rules are loaded
-if [ "$(auditctl -l | wc -l )" -ne 39 ]; then 
-    logger -p WARN -t "[Health-Check-Auditd]" "Service has malformed rules"
+if [ "$(auditctl -l | wc -l )" -ne 41 ]; then 
+    logger -t "[Health-Check-Auditd]" "Service has malformed rules"
 fi
 
 # now onto pain -- the sysctl configurations

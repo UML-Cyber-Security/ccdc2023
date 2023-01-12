@@ -8,7 +8,7 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-export DEBIAN_FRONTEND=noninteractive
+
 # Stolen from online. Differnet package managers
 # Declare an array, and map values 
 declare -A osInfo;
@@ -31,7 +31,8 @@ echo "Pkage manager is "$PKG
 
 if [ "$PKG" = "apt-get" ]; then 
     export DEBIAN_FRONTEND=noninteractive
-elif 
+fi
+
 #################### UPDATE
 # Download list of packages to update.
 $PKG update
@@ -55,7 +56,7 @@ elif [ "$PKG" = "apk" ]; then
     # Sudeoers need to be in the wheel group
     echo '%wheel ALL=(ALL) ALL' > /etc/sudoers.d/wheel
     # apk add ufw -y
-elif [ "PKG" = pacman ]
+elif [ "PKG" = pacman ]; then
     echo "We probably have other problems..." 
 fi
 ##################### Remove 
