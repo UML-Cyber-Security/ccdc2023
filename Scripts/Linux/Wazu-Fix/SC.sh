@@ -137,32 +137,9 @@ echo " -w /etc/group -p wa -k identity | -w /etc/passwd -p wa -k identity | -w /
 echo "-a always,exit -F arch=b32 -S execve -F euid=0 -F auid>=1000 -F auid!=-1 -F key=sudo_log \n-a always,exit -F arch=b64 -S execve -F euid=0 -F auid>=1000 -F auid!=-1 -F key=sudo_log" >> /etc/audit/rules.d/ccdc.rules
 
 
-
-################################## Journald
-# Ensure Journald logs are sent to syslog
-if [ "$(grep "ForwardToSyslog" /etc/systemd/journald.conf | wc -l)" -ne 0 ]; then 
-  sed -i 's/.*ForwardToSyslog.*/ForwardToSyslog=yes/g' /etc/systemd/journald.conf
-else
-  echo "ForwardToSyslog=yes" >> /etc/systemd/journald.conf
-fi
-
-# Compress large log files
-if [ "$(grep "Compress" /etc/systemd/journald.conf | wc -l)" -ne 0 ]
-  sed -i 's/.*Compress.*/Compress=yes/g' /etc/systemd/journald.conf
-else
-  echo "Compress=yes" >> /etc/systemd/journald.conf
-fi
-
-# Logs written to disk rather than stored in volitile mem (RAM?)
-if [ "$(grep "Storage" /etc/systemd/journald.conf | wc -l)" -ne 0 ]
-  sed -i 's/.*Storage.*/Storage=persistent/g' /etc/systemd/journald.conf
-else
-  echo "Storage=persistent" >> /etc/systemd/journald.conf
-fi
-
 # Change Lof file perms
 # For all files and directories in /var/log execute chmod --- on what was found
-find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g-w,o-rwx "{}" +
+#find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g-w,o-rwx "{}" +
 
 
 #If any accounts in the /etc/shadow file do not have a password, run the following command to lock the account until it can be determined why it does not have a password: # passwd -l <em><username></em>. Also, check to see if the account is logged in and investigate what it is being used for to determine if it needs to be forced off.

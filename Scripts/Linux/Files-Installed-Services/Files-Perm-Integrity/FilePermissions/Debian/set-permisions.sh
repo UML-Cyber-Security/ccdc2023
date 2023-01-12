@@ -69,3 +69,7 @@ chmod og-rwx /etc/ssh/sshd_config
 find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chmod 0600 {} \;
 # SSH Public Keys permissions
 find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chmod 0644 {} \; 
+
+
+# Chnage permissions of all files in /var/log
+# find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g-w,o-rwx "{}" +#

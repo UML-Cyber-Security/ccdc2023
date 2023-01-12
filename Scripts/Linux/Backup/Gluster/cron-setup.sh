@@ -13,7 +13,7 @@ fi
 # echo new cron job 
 # Run the job whenver the minuets are 0 or 30
 crontab -l > new-cron
-echo "0,30 * * * * ./Gluster-Backup <>" >> new-cron
+echo "0,30 * * * * ./Gluster-Backup.sh <>" >> new-cron
 crontab new-cron
 rm new-cron
 #install new cron file
