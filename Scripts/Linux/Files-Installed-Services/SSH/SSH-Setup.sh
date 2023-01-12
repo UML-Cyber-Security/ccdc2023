@@ -83,6 +83,8 @@ if [ $(cat /etc/ssh/sshd_config | grep LoginGraceTime | wc -l) -eq 0 ]; then
 else
     sed -i '/UsePAM /c\UsePAM yes' /etc/ssh/sshd_config
 fi
+
+### May not want this if we are going to use SSH tunneling
 echo "[+] Disabling TCP Forwarding"
 if [ $(cat /etc/ssh/sshd_config | grep AllowTcpForwarding | wc -l) -eq 0 ]; then
     echo "AllowTcpForwarding no" >> /etc/ssh/sshd_config
@@ -102,19 +104,19 @@ else
     sed -i '/MaxSessions /c\MaxSessions 10' /etc/ssh/sshd_config
 fi
 echo "[+] Configuring Ciphers"
-if [ "$(grep '.*Ciphers.*' /etc/ssh/sshd_config | wc -l)" -eq 0]; then
+if [ "$(grep '.*Ciphers.*' /etc/ssh/sshd_config | wc -l)" -eq 0 ]; then
     echo "Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128- gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr" >> /etc/ssh/sshd_config
 else
     sed -i 's/.*Ciphers.*/Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr/g' /etc/ssh/sshd_config
 fi
 echo "[+] Configuring MACS"
-if [ "$(grep '.*MACs.*' /etc/ssh/sshd_config | wc -l)" -eq 0]; then
+if [ "$(grep '.*MACs.*' /etc/ssh/sshd_config | wc -l)" -eq 0 ]; then
     echo "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256" >> /etc/ssh/sshd_config
 else
     sed -i 's/.*MACs.*/MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256/g' /etc/ssh/sshd_config
 fi
 echo "[+] Configuring KEX"
-if [ "$(grep '.*KexAlgorithms.*' /etc/ssh/sshd_config | wc -l)" -eq 0]; then
+if [ "$(grep '.*KexAlgorithms.*' /etc/ssh/sshd_config | wc -l)" -eq 0 ]; then
     echo "KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256" >> /etc/ssh/sshd_config
 else
     sed -i 's/.*KexAlgorithms.*/KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256/g' /etc/ssh/sshd_config

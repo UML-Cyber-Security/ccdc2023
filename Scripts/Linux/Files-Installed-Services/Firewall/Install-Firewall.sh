@@ -11,6 +11,7 @@ fi
 # If there exists this file, it is a debian based system. Use APT
 if [ -f "/etc/debian_version" ]; 
     then 
+        export DEBIAN_FRONTEND=noninteractive
         # Install IPTables if it is not already installed
         apt-get -q install iptables -y
         # Set preferences for iptables-persistance 

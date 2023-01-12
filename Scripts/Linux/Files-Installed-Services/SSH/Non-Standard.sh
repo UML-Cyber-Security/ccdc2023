@@ -69,3 +69,4 @@ for index in ${!INPUTSSH[@]}; do
     iptables -D FORWARD $((${INPUTSSH[index]}-$index))
 done 
 
+systemctl restart sshd

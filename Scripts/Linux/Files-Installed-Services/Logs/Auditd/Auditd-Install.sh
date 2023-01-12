@@ -10,6 +10,7 @@ fi
 
 # If there exists this file, it is a debian based system. Use APT
 if [ -f "/etc/debian_version" ]; then
+    export DEBIAN_FRONTEND=noninteractive
     apt-get -q install auditd audispd-plugins -y
 elif [ -f "/etc/redhat-release" ]; then
     yum install auditd audit-libs -y
@@ -31,10 +32,11 @@ echo -e "-a always,exit -F arch=b64 -S adjtimex,settimeofday -k time-change \n-a
 #echo -e "-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale \n-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale \n-w /etc/issue -p wa -k system-locale \n-w /etc/issue.net -p wa -k system-locale \n-w /etc/hosts -p wa -k system-locale  \n-w /etc/network -p wa -k system-locale" >> /etc/audit/rules.d/ccdc.rules 
 echo -e "-a always,exit -F arch=b64 -S sethostname,setdomainname -k system-locale \n-a always,exit -F arch=b32 -S sethostname,setdomainname -k system-locale \n-w /etc/issue -p wa -k system-locale \n-w /etc/issue.net -p wa -k system-locale \n-w /etc/hosts -p wa -k system-locale  \n-w /etc/network -p wa -k system-locale" >> /etc/audit/rules.d/ccdc.rules 
 
-# Log modifications to AppArmor's Mandatory Acces Controls (2614)
-#echo "-w /etc/apparmor/ -p wa -k MAC-policy -w /etc/apparmor.d/ -p wa -k MAC-policy" >> /etc/audit/rules.d/ccdc.rules 
-echo -e "-w /etc/apparmor/ -p wa -k MAC-policy \n-w /etc/apparmor.d/ -p wa -k MAC-policy" >> /etc/audit/rules.d/ccdc.rules 
-
+if [ "$(systemctl status apparmor | grep "active (running)" | wc -l)" -ne 0 ]; then 
+    # Log modifications to AppArmor's Mandatory Acces Controls (2614)
+    #echo "-w /etc/apparmor/ -p wa -k MAC-policy -w /etc/apparmor.d/ -p wa -k MAC-policy" >> /etc/audit/rules.d/ccdc.rules 
+    echo -e "-w /etc/apparmor/ -p wa -k MAC-policy \n-w /etc/apparmor.d/ -p wa -k MAC-policy" >> /etc/audit/rules.d/ccdc.rules 
+fi
 # Collect login/logout information (2615)
 #echo "-w /var/log/faillog -p wa -k logins | -w /var/log/lastlog -p wa -k logins | -w /var/log/tallylog -p wa -k logins" >> /etc/audit/rules.d/ccdc.rules
 echo -e "-w /var/log/faillog -p wa -k logins \n-w /var/log/lastlog -p wa -k logins \n-w /var/log/tallylog -p wa -k logins" >> /etc/audit/rules.d/ccdc.rules

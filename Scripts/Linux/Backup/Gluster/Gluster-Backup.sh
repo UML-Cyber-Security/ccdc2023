@@ -16,7 +16,7 @@ if [ "$EUID" -ne 0 ]
 fi
 
 # If necissary make the file structure 
-if ! [ -d "/backups/gluster/active/gluster-brick$2" ]; then 
+if ! [ -d "/backups/gluster/active/gluster-brick-$2" ]; then 
     mkdir -p /backups/gluster/active/gluster-brick-$2
 fi
 

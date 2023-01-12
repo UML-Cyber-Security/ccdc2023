@@ -89,7 +89,7 @@ apt purge snmpd
 # Remove RPC client
 apt purge rpcbind
 
-# Disable IPv6
+############## Disable IPv6
 #Edit /etc/default/grub and add ipv6.disable=1 to the GRUB_CMDLINE_LINUX parameters: GRUB_CMDLINE_LINUX="ipv6.disable=1" Run the following command to update the grub2 configuration: # update-grub
 if [ "$(grep 'GRUB_CMDLINE_LINUX=.*' | wc -l)" -ne 0 ]; then
   sed "s/GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX=\"ipv6.disable=1\"/g"  /etc/default/grub
@@ -102,7 +102,7 @@ update-grub
 
 
 # Disable wireless interfaces 
-# nmcli radio all off # Not needed 
+# nmcli radio all off # Not needed?
 
 
 
@@ -137,32 +137,9 @@ echo " -w /etc/group -p wa -k identity | -w /etc/passwd -p wa -k identity | -w /
 echo "-a always,exit -F arch=b32 -S execve -F euid=0 -F auid>=1000 -F auid!=-1 -F key=sudo_log \n-a always,exit -F arch=b64 -S execve -F euid=0 -F auid>=1000 -F auid!=-1 -F key=sudo_log" >> /etc/audit/rules.d/ccdc.rules
 
 
-
-################################## Journald
-# Ensure Journald logs are sent to syslog
-if [ "$(grep "ForwardToSyslog" /etc/systemd/journald.conf | wc -l)" -ne 0 ]; then 
-  sed -i 's/.*ForwardToSyslog.*/ForwardToSyslog=yes/g' /etc/systemd/journald.conf
-else
-  echo "ForwardToSyslog=yes" >> /etc/systemd/journald.conf
-fi
-
-# Compress large log files
-if [ "$(grep "Compress" /etc/systemd/journald.conf | wc -l)" -ne 0 ]
-  sed -i 's/.*Compress.*/Compress=yes/g' /etc/systemd/journald.conf
-else
-  echo "Compress=yes" >> /etc/systemd/journald.conf
-fi
-
-# Logs written to disk rather than stored in volitile mem (RAM?)
-if [ "$(grep "Storage" /etc/systemd/journald.conf | wc -l)" -ne 0 ]
-  sed -i 's/.*Storage.*/Storage=persistent/g' /etc/systemd/journald.conf
-else
-  echo "Storage=persistent" >> /etc/systemd/journald.conf
-fi
-
 # Change Lof file perms
 # For all files and directories in /var/log execute chmod --- on what was found
-find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g-w,o-rwx "{}" +
+#find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g-w,o-rwx "{}" +
 
 
 #If any accounts in the /etc/shadow file do not have a password, run the following command to lock the account until it can be determined why it does not have a password: # passwd -l <em><username></em>. Also, check to see if the account is logged in and investigate what it is being used for to determine if it needs to be forced off.
@@ -192,24 +169,6 @@ fi
 
 
 
-# PAM -- need to do this 
-#Ensure password creation requirements are configured.	-
-#Ensure lockout for failed password attempts is configured.	-
-#Ensure password reuse is limited.	-
-#Ensure password hashing algorithm is SHA-512.	-
-#Ensure minimum days between password changes is configured.	-
-#Ensure password expiration is 365 days or less.	-
-#Ensure password expiration warning days is 7 or more.	-
-#Ensure inactive password lock is 30 days or less.	useradd -D
-#Ensure default group for the root account is GID 0.	-
-#Ensure default user umask is 027 or more restrictive.	sh -c "umask"
-#Ensure default user shell timeout is 900 seconds or less.	-
-
-
-
-# Password This
-#Ensure password fields are not empty.	-
-#Ensure root is the only UID 0 account.	-
 #Ensure shadow group is empty.	 sh -c "awk -F: -v GID=\"$(awk -F: '($1==\"shadow\") {print $3}' /etc/group)\" '($4==GID) {print $1}' /etc/passwd"
 
 
