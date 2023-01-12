@@ -27,25 +27,46 @@ do
     fi
 done
 
-echo "Pkage manager is "$PKG
-
-if [ "$PKG" = "apt-get" ]; then 
-    export DEBIAN_FRONTEND=noninteractive
-fi
-
 #################### UPDATE
 # Download list of packages to update.
 $PKG update
 $PKG upgrade -y # Need to check if this works.
 
+
+
 ##################### Instalations
 # Install Python
 # Make sure sudo is installed
 # Install UFW -- note done 
-if [ "$PKG" = "apt-get" ] | [ "$PKG" = "yum" ]; then   
-    $PKG install python3 -y
-    $PKG install sudo -y
+
+##################### Remove 
+# Remove automounting untility
+# Remove telnet from machine
+# Remove Network Information Service from machine 
+# Remove Talk Service from machine 
+# Remove rshell client from machine 
+if [ "$PKG" = "apt-get" ]; then
+    # Mak Apt act in non-interactive mode 
+    export DEBIAN_FRONTEND=noninteractive
+
+    apt-get install python3 -y
+    apt-get install sudo -y
     # $PKG install ufw -y
+
+    apt-get purge autofs -y
+    apt-get purge telnet -y
+    apt-get purge nis -y
+    apt-get purge talk -y 
+    apt-get purge rsh-client -y
+elif [ "$PKG" = "yum" ]; then
+    yum install python3 -y
+    yum install sudo -y
+
+    yum remove autofs -y
+    yum remove telnet -y
+    yum remove nis -y
+    yum remove talk -y
+    yum remove rsh-client -y
 elif [ "$PKG" = "apk" ]; then
     # NEED TO ENABLE COMMUNITY REPOSITORY
     sed -i 's/^#\(.*community\)/\1/g' /etc/apk/repositories
@@ -54,30 +75,8 @@ elif [ "$PKG" = "apk" ]; then
     apk add sudo  -y
     # Edit sudoers file with basic allow.
     # Sudeoers need to be in the wheel group
-    echo '%wheel ALL=(ALL) ALL' > /etc/sudoers.d/wheel
-    # apk add ufw -y
-elif [ "PKG" = pacman ]; then
-    echo "We probably have other problems..." 
-fi
-##################### Remove 
-# Remove automounting untility
-# Remove telnet from machine
-# Remove Network Information Service from machine 
-# Remove Talk Service from machine 
-# Remove rshell client from machine 
-if [ "$PKG" = "apt-get" ]; then
-    apt-get purge autofs -y
-    apt-get purge telnet -y
-    apt-get purge nis -y
-    apt-get purge talk -y 
-    apt-get purge rsh-client -y
-elif [ "$PKG" = "yum" ]; then
-    yum remove autofs -y
-    yum remove telnet -y
-    yum remove nis -y
-    yum remove talk -y
-    yum remove rsh-client -y
-elif [ "$PKG" = "apk" ]; then
+    echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers.d/wheel
+
     # Appears that apk will not ask for confirmation unless you use the --interactive flag
     apk del autofs 
     apk del telnet

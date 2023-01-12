@@ -45,8 +45,8 @@ systemctl enable glusterd
 systemctl start glusterd
 
 # Limit number of bricks 
-sed -i 's/.*base-port.*/   option base-port 49152/g' /etc/glusterfs/glusterd.vol
-sed -i 's/.*max-port.*/    option max-port 49162/g' /etc/glusterfs/glusterd.vol
+sed -i 's/.*base_port.*/    option base_port 49152/g' /etc/glusterfs/glusterd.vol
+sed -i 's/.*max_port.*/    option max_port 49162/g' /etc/glusterfs/glusterd.vol
 
 # Create backup
 mkdir -p /backups/configs/gluster

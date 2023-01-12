@@ -31,7 +31,7 @@ for i in ${!IDENTIFIERS[@]}; do
 done
 
 
-# The Lazy way of doing it... 
+# An alternate way of doing this 
 while true
 do
     #https://superuser.com/questions/188240/how-to-verify-that-file2-is-newer-than-file1-in-bash
