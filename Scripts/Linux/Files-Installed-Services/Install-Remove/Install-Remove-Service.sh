@@ -30,6 +30,11 @@ done
 #################### UPDATE
 # Download list of packages to update.
 $PKG update
+
+if [ "$PKG" = "apt-get" ]; then
+    export DEBIAN_FRONTEND=noninteractive
+fi
+
 $PKG upgrade -y # Need to check if this works.
 
 

@@ -25,8 +25,11 @@ for f in ${!osInfo[@]}
 do
     if [[ -f $f ]];then # Could move the ifs in here.
         PKG=${osInfo[$f]}
-        if [ "$PKG" = "apt-get" ] | [ "$PKG" = "yum" ]; then
-          $PKG install glusterfs
+        if [ "$PKG" = "apt-get" ];then
+          export DEBIAN_FRONTEND=noninteractive
+          $PKG install -y glusterfs
+        if [ "$PKG" = "yum" ]; then
+          $PKG install -y glusterfs
         elif [ "$PKG" = "pacman" ]; then
           echo "We Have more issues"
         fi
@@ -106,7 +109,6 @@ ip6tables -A GLUSTER-OUT -p tcp -m multiport --dport 49152:49162 -j ACCEPT
 # ip6tables -A GLUSTER -p udp -m multiport --dport 49152:49162 -m conntrack --ctstate NEW -j ACCEPT # UDP is not mentioned, we will see if it works without
 # -------------------------------------------------------------------------------------------------------------------
 
-then echo "Appending Gluster Firewall Chains to the Firewall"
 iptables -A INPUT -j GLUSTER-IN
 iptables -A OUTPUT -j GLUSTER-OUT
 ip6tables -A INPUT -j GLUSTER-IN

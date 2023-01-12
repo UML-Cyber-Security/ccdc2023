@@ -26,7 +26,6 @@ do
     fi
 done
 
-echo "Pkage manager is "$PKG
 
 if [ "$PKG" = "apt-get" ]; then
     export DEBIAN_FRONTEND=noninteractive
@@ -47,12 +46,15 @@ elif  [ "$PKG" = "yum" ]; then
     yum install -y yum-utils device-mapper-persistent-data lvm2
     yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
-    # install docker engine and compose 
-    yum install docker 
-    yum install -y docker-compose-plugin
-
-    # start docker 
-    systemctl start docker
+    # install docker engine and compose -- installs podman
+    #yum install -y docker 
+    #yum install -y docker-compose-plugin
+    
+    # installs docker
+    yum install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+    # start docker # RHEL installs podman
+    systemctl enable --now docker
+    
 elif [ "$PKG" = "apk" ]; then
     # Install Docker
     apk add --update docker openrc

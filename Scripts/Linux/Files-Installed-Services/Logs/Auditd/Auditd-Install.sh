@@ -13,7 +13,7 @@ if [ -f "/etc/debian_version" ]; then
     export DEBIAN_FRONTEND=noninteractive
     apt-get -q install auditd audispd-plugins -y
 elif [ -f "/etc/redhat-release" ]; then
-    yum install auditd audit-libs -y
+    yum install audit audit-libs -y
 elif [ -f "/etc/arch-release" ];then 
     echo "Arch, Will this come up -- probably should do fedora"
 fi
@@ -83,4 +83,9 @@ echo -e "-w /sbin/insmod -p x -k modules \n-w /sbin/rmmod -p x -k modules \n-w /
 # Make audit logs immutable. (2624) -- ensure that this works 
 echo "-e 2" >> /etc/audit/rules.d/99-finalize.rules 
 
-systemctl restart auditd
+if [ -f redhat-release ]; then 
+    service auditd restart
+else
+    systemctl restart auditd
+fi
+

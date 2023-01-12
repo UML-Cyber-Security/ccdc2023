@@ -94,6 +94,6 @@ systemctl --now disable nis
 
 
 # Enforce Defualt Apparmor Configuration --> will we use SELinux insted?
-if [ "$(systemctl is-active apparmor)" = "active"]; then 
+if [ "$(systemctl is-active apparmor)" = "active" ]; then 
   aa-enforce /etc/apparmor.d/* 
 fi

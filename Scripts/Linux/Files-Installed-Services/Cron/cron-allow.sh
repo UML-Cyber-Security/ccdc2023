@@ -19,4 +19,10 @@ chmod og-rwx /etc/at.allow
 chown root:root /etc/cron.allow
 chown root:root /etc/at.allow
 
-systemctl --now enable cron
+# https://www.cyberciti.biz/faq/howto-linux-unix-start-restart-cron/
+if [ -f redhat-release ] | [ -f /etc/alpine-release ] ; then 
+  systemctl --now enable crond 
+else
+  systemctl --now enable cron
+fi
+  
