@@ -54,7 +54,7 @@ elif  [ "$PKG" = "yum" ]; then
     yum install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
     # start docker # RHEL installs podman
     systemctl enable --now docker
-    
+
 elif [ "$PKG" = "apk" ]; then
     # Install Docker
     apk add --update docker openrc
@@ -68,6 +68,5 @@ elif [ "$PKG" = "pacman" ]; then
     # Start service 
     #systemctl --user start docker-desktop
 fi
-
 
 # Need to run the Script to setup the Docker Firewall.

@@ -1,0 +1,30 @@
+#! /bin/bash
+
+#+++++++++++++++
+# This scrip takes one argument
+# It creates the docker group if
+# It is not already created
+# The script adds the user 
+# specified to the docker group
+#+++++++++++++++
+
+# Untested -- argument 1 is the user we are goint to run the docker daemon from.
+
+# Check if the scrip is ran as root.
+# $EUID is a env variable that contains the users UID
+# -ne 0 is not equal zero
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
+# Create Docker Group
+if [ "$(grep -q -E "^docker:" /etc/group | wc -l)" -eq 0 ]; then
+    groupadd docker
+fi
+
+# Add the user to the group
+usermod -aG docker $1
+
+# Reload the docker group. Applies canges
+newgrp docker

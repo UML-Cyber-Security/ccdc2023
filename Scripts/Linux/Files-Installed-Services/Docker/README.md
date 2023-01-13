@@ -12,5 +12,5 @@ We use the line
 ```
 instead of the traditional **yum install -y docker** 
 # Docker Group
-sudo groupadd docker && sudo usermod -aG docker ubuntu
+sudo groupadd docker && sudo usermod -aG docker <User>
 sudo groupadd docker && sudo gpasswd -a ${USER} docker && sudo service docker restart
