@@ -1,6 +1,10 @@
+# ORDER
+This should be the first script that we run on the system
+
+
 # Locations 
 
-## Gluster 
+## Gluster -- Not liekly to be needed.
 Active tar archives of local bricks will be stored at **/backups/gluster/active/gluster-brick-\<TAG\>**
 
 The config will be backed up to /backups/configs/gluster

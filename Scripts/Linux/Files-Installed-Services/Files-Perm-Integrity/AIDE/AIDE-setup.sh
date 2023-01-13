@@ -28,6 +28,9 @@ mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db # Works
 # Configure AIDE service
 aide --config /etc/aide/aide.conf --init # This works
 
+
+
+# Not needed after this for basic usage
 cp ./config/aidecheck.service /etc/systemd/system/aidecheck.service
 cp ./config/aidecheck.timer /etc/systemd/system/aidecheck.timer   
 chmod 0644 /etc/systemd/system/aidecheck.*  
