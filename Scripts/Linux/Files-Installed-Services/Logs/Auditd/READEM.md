@@ -8,3 +8,19 @@ https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/se
 
 
 When using RHEL based may need to use service to restart things.
+
+
+# Keys
+* time-change
+* system-locale
+* MAC-policy
+  * if apparmor is enabled
+* logins
+* session
+* perm_mod
+* access
+* mounts
+* delete
+* scope
+* sudo_log -- anything as root
+* modules

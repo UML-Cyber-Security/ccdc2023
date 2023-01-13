@@ -6,7 +6,7 @@ There are a variety of ways we can interact with the tunables, in our case we wr
 
 ## Commands 
 
-We can list all the tunables with the following commands. They also list their value(s).
+We can list all of the tunables with the following commands. They also list their value(s).
 ```sh
 # List all tunables and their values
 sysctl -a
@@ -90,7 +90,7 @@ sysctl -p /etc/sysctl.d/99-custom.conf
 ## How we can test it and apply changes.
 We cannot really test it other then checking if the values we have written to the config, or to  files have been applied. 
 
-This would be done by looking at all the tunable or just some of them. (see commands at the start!)
+This would be done by looking at all of the tunable or just some of them. (see commands at the start!)
 
 ## Ref
 * https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/kernel_administration_guide/working_with_sysctl_and_kernel_tunables
