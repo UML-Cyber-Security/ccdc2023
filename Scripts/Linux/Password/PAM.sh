@@ -26,37 +26,24 @@ else
     sed -i "s/password requisite pam_pwquality.so.*/password requisite pam_pwquality.so retry 3/g" /etc/pam.d/common-password
 fi
 
-if [ "$(grep 'auth required pam_tally2.so onerr' /etc/pam.d/common-auth | wc -l)" -eq 0 ]; then
-    echo "auth required pam_tally2.so onerr=fail" >> /etc/pam.d/common-auth
+if [ "$(grep 'auth required pam_faillock.so' /etc/pam.d/common-auth | wc -l)" -eq 0 ]; then
+    echo "auth required pam_faillock.so preauth silent audit deny=3 unlock_time=900" >> /etc/pam.d/common-auth
 else
-    sed  -i "s/.*auth required pam_tally2.so onerr.*/auth required pam_tally2.so onerr=fail/g" /etc/pam.d/common-auth
+    sed  -i "s/.*auth required pam_faillock.so.*/auth required pam_faillock.so preauth silent audit deny=3 unlock_time=900/g" /etc/pam.d/common-auth
 fi
-
-if [ "$(grep 'audit silent deny' /etc/pam.d/common-auth | wc -l)" -eq 0 ]; then
-    echo "audit silent deny=5" >> /etc/pam.d/common-auth
-else
-    sed  -i "s/.*audit silent deny.*/audit silent deny=5/g" /etc/pam.d/common-auth
-fi
-
-# If the user fails to loging N times then they are locked out for 900 seconds
-if [ "$(grep 'unlock_time' /etc/pam.d/common-auth | wc -l)" -eq 0 ]; then
-    echo "unlock_time=900" >> /etc/pam.d/common-auth
-else
-    sed  -i "s/.*unlock_time.*/unlock_time=900/g" /etc/pam.d/common-auth
-fi
-
-if [ "$(grep 'account\s*requisite' /etc/pam.d/common-account | wc -l)" -eq 0 ]; then
+ 
+if [ "$(grep 'account\s*requisite\s*pam_deny.so' /etc/pam.d/common-account | wc -l)" -eq 0 ]; then
     echo "account     requisite    pam_deny.so" >> /etc/pam.d/common-account
 else
-    sed  -i "s/.*account\s*requisite.*/account     requisite    pam_deny.so/g" /etc/pam.d/common-account
+    sed  -i "s/.*account\s*requisite\s*pam_deny.so.*/account     requisite    pam_deny.so/g" /etc/pam.d/common-account
 fi
 
 # Lock user accounts after certain number of failed ssh login attempts
 # https://www.tecmint.com/use-pam_tally2-to-lock-and-unlock-ssh-failed-login-attempts/
-if [ "$(grep 'account\s*required' /etc/pam.d/common-account | wc -l)" -eq 0 ]; then
-    echo "account     required    pam_tally2.so" >> /etc/pam.d/common-account
+if [ "$(grep 'account\s*required\s*pam_faillock' /etc/pam.d/common-account | wc -l)" -eq 0 ]; then
+    echo "account     required    pam_faillock.so" >> /etc/pam.d/common-account
 else
-    sed  -i "s/.*account\s*required.*/account     required    pam_tally2.so/g" /etc/pam.d/common-account
+    sed  -i "s/.*account\s*required\s*pam_faillock.*/account     required    pam_faillock.so/g" /etc/pam.d/common-account
 fi
 
 # Remember the previous 5 passwords (prevents reuse) 
