@@ -50,6 +50,7 @@ if [ "$PKG" = "apt-get" ]; then
 
     apt-get install python3 -y
     apt-get install sudo -y
+    apt-get install libpam-google-authenticator -y
     # $PKG install ufw -y
 
     sudo apt-get purge ftp -y
@@ -65,7 +66,8 @@ elif [ "$PKG" = "yum" ]; then
 
     yum install python3 -y
     yum install sudo -y
-
+    yum install libpam-google-authenticator -y
+    
     yum remove ftp -y
     yum remove autofs -y
     yum remove telnet -y
