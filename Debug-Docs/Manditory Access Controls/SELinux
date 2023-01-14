@@ -1,18 +1,25 @@
-
-https://www.redhat.com/en/topics/linux/what-is-selinux
-
-http://selinuxproject.org/page/Main_Page
-
-https://www.digitalocean.com/community/tutorials/what-is-selinux
-
-https://wiki.archlinux.org/title/SELinux
+# What is it
+ SELinux is a Mandatory Access Control. We can use it to limit what programs running on the system can do. In this case SELinux is a deny be defualt where we whitelist what programs can or cannot do.
 
 
+ # Commands
+ 
+ WE can look at the current status 
+ ```
+ sestatus
+```
+# Note
+We can install and run SELinux on Ubuntu based systems. 
+We can use it on containers as well
 
-https://docs.oracle.com/en/operating-systems/oracle-linux/selinux/selinux-AdministeringSELinuxPolicies.html#ol-set-bool-selinux
 
+# REF
 
-https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/4/html/reference_guide/s2-selinux-files-etc
-
-
-https://web.mit.edu/rhel-doc/5/RHEL-5-manual/Deployment_Guide-en-US/rhlcommon-chapter-0001.html#:~:text=What%20is%20the%20SELinux%20Policy,roles%20that%20can%20be%20attained.
+* https://www.linode.com/docs/guides/a-beginners-guide-to-selinux-on-centos-7/
+* https://www.redhat.com/en/topics/linux/what-is-selinux
+* http://selinuxproject.org/page/Main_Page
+* https://www.digitalocean.com/community/tutorials/what-is-selinux
+* https://wiki.archlinux.org/title/SELinux
+* https://docs.oracle.com/en/operating-systems/oracle-linux/selinux/selinux-AdministeringSELinuxPolicies.html#ol-set-bool-selinux
+* https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/4/html/reference_guide/s2-selinux-files-etc
+* https://web.mit.edu/rhel-doc/5/RHEL-5-manual/Deployment_Guide-en-US/rhlcommon-chapter-0001.html#:~:text=What%20is%20the%20SELinux%20Policy,roles%20that%20can%20be%20attained.

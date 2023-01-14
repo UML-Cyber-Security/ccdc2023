@@ -121,4 +121,6 @@ There is the runtime aspect of this program. It would not be wise to change the 
 # References  
 * https://www.redhat.com/sysadmin/linux-security-aide
 * https://aide.github.io/doc/
-* 
+
+Whats an INODE: 
+https://www.bluematador.com/blog/what-is-an-inode-and-what-are-they-used-for
