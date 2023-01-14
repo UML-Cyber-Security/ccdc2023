@@ -66,7 +66,8 @@ elif [ "$PKG" = "yum" ]; then
 
     yum install python3 -y
     yum install sudo -y
-
+    yum install libpam-google-authenticator -y
+    
     yum remove ftp -y
     yum remove autofs -y
     yum remove telnet -y
