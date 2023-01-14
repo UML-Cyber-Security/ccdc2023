@@ -49,7 +49,7 @@ echo "net.ipv4.conf.default.secure_redirects = 0" >> /etc/sysctl.d/ccdc.conf
 #sysctl -w net.ipv4.route.flush=1
 
 # Log packets with unroutable destinations
-echo "net.ipv4.conf.all.log_martians = 1 " >> /etc/sysctl.d/ccdc.conf # -- Done in script
+echo "net.ipv4.conf.all.log_martians = 1" >> /etc/sysctl.d/ccdc.conf # -- Done in script
 echo "net.ipv4.conf.default.log_martians = 1" >> /etc/sysctl.d/ccdc.conf 
 # Load conf
 #sysctl -w net.ipv4.route.flush=1
@@ -94,6 +94,6 @@ systemctl --now disable nis
 
 
 # Enforce Defualt Apparmor Configuration --> will we use SELinux insted?
-if [ "$(systemctl is-active apparmor)" = "active"]; then 
+if [ "$(systemctl is-active apparmor)" = "active" ]; then 
   aa-enforce /etc/apparmor.d/* 
 fi

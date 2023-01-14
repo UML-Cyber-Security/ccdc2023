@@ -29,15 +29,11 @@ done
 
 #################### UPDATE
 # Download list of packages to update.
-$PKG update
-$PKG upgrade -y # Need to check if this works.
-
-
 
 ##################### Instalations
 # Install Python
 # Make sure sudo is installed
-# Install UFW -- note done 
+# Install UFW -- not done 
 
 ##################### Remove 
 # Remove automounting untility
@@ -47,6 +43,9 @@ $PKG upgrade -y # Need to check if this works.
 # Remove rshell client from machine 
 if [ "$PKG" = "apt-get" ]; then
     # Mak Apt act in non-interactive mode 
+    $PKG update
+    export DEBIAN_FRONTEND=noninteractive
+    $PKG upgrade -y # Need to check if this works.
     export DEBIAN_FRONTEND=noninteractive
 
     apt-get install python3 -y
@@ -60,6 +59,10 @@ if [ "$PKG" = "apt-get" ]; then
     apt-get purge talk -y 
     apt-get purge rsh-client -y
 elif [ "$PKG" = "yum" ]; then
+
+    $PKG update -y
+    $PKG upgrade -y # Need to check if this works.
+
     yum install python3 -y
     yum install sudo -y
 
@@ -70,6 +73,8 @@ elif [ "$PKG" = "yum" ]; then
     yum remove talk -y
     yum remove rsh-client -y
 elif [ "$PKG" = "apk" ]; then
+    $PKG update
+    $PKG upgrade -y # Need to check if this works.
     # NEED TO ENABLE COMMUNITY REPOSITORY
     sed -i 's/^#\(.*community\)/\1/g' /etc/apk/repositories
     # Install Python and Pip3

@@ -40,8 +40,8 @@ if [ "$(systemctl status rsyslog | grep "active (running)" | wc -l)" -eq 0 ]; th
     logger -t "[Health-Check-Rsyslog]" "Service is inactive"
 fi
 
-# auditd -- make sure all rules are loaded
-if [ "$(auditctl -l | wc -l )" -ne 41 ]; then 
+# auditd -- make sure all rules are loaded # need to change 
+if [ "$(auditctl -l | wc -l )" -ne 39 ]; then 
     logger -t "[Health-Check-Auditd]" "Service has malformed rules"
 fi
 

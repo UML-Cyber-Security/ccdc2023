@@ -26,33 +26,60 @@ do
     fi
 done
 
-echo "Pkage manager is "$PKG
 
 if [ "$PKG" = "apt-get" ]; then
     export DEBIAN_FRONTEND=noninteractive
-    # Remove old version? 
-    # sudo apt-get remove docker docker-engine docker.io containerd runc
+    # Remove old versions
+    apt-get remove -y  docker docker.io containerd runc 
+    # This one needs to be seperated otherwise the command will not run.
+    # This may not even exists so it can cause errors.
+    apt-get remove -y docker-engine
+    # Install necissary packages to run apt over HTTPS
+    apt-get -y install ca-certificates curl gnupg lsb-release
     
-    # install dcoker engine and compose
-    # apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
-    apt-get install docker.io -y
-    apt-get install docker-compose-plugin
+    # Create file structure and pull Docker's GPG key
+    mkdir -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    
+    #  Setup repository 
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    # Update to load in changes
+    apt-get update
+
+    # install docker engine and compose
+    apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+    #apt-get install docker.io -y # This is what we do if we are not using docker's repository 
+
+    # Automated install may give issues... Manual time
+    # apt-get install docker-compose-plugin
+    # Setup file structure 
+    mkdir -p /usr/local/lib/docker/cli-plugins
+    # Pull the files from Docker's Github repository 
+    curl -SL https://github.com/docker/compose/releases/download/v2.15.1/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+
+    # Change file permissions
+    chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
     # Start docker 
     systemctl start docker
 elif  [ "$PKG" = "yum" ]; then
     # Remove old versions?
-    #sudo yum remove docker \ docker-client \ docker-client-latest \ docker-common \ docker-latest \ docker-latest-logrotate \ docker-logrotate \ docker-engine
+    yum remove docker \ docker-client \ docker-client-latest \ docker-common \ docker-latest \ docker-latest-logrotate \ docker-logrotate \ docker-engine
 
     # Install yumutils and add repository for docker 
     yum install -y yum-utils device-mapper-persistent-data lvm2
     yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
-    # install docker engine and compose 
-    yum install docker 
-    yum install -y docker-compose-plugin
+    # install docker engine and compose -- installs podman
+    #yum install -y docker 
+    #yum install -y docker-compose-plugin
+    
+    # installs docker
+    yum install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+    # start docker # RHEL installs podman
+    systemctl enable --now docker
 
-    # start docker 
-    systemctl start docker
 elif [ "$PKG" = "apk" ]; then
     # Install Docker
     apk add --update docker openrc
@@ -66,6 +93,5 @@ elif [ "$PKG" = "pacman" ]; then
     # Start service 
     #systemctl --user start docker-desktop
 fi
-
 
 # Need to run the Script to setup the Docker Firewall.

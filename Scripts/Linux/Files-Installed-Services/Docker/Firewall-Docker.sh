@@ -42,6 +42,6 @@ iptables -A DOCKER-OUT -j RETURN
 
 # Insert Chains into IN and OUT
 sudo iptables -A INPUT -j DOCKER-IN
-sudo iptables -A OUTPUT-j DOCKER-OUT
+sudo iptables -A OUTPUT -j DOCKER-OUT
 
 

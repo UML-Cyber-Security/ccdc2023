@@ -17,25 +17,6 @@ Currently there is additional logging for SSH-INITAL connections,  INVALID packe
 * Traffic to Docker containers will result in logs prefixed at log-level 5 (Notice) with
   * "IPTables-DOCKER-LOG:"
 
-## Gluster
-Gluster Chains (GLUSTER-IN, GLUSTER-OUT) are created with the necessary rules to support 10 blocks on a system. (Arbitrarily Chosen)
-We can enable the Gluster rules by adding the chains to the INPUT and OUTPUT chains respectively.
-
-We provide no conditions as this is just a patchwork rule, so this will exist on all systems and can be enabled with 2 lines.
-
-```sh
-# Add Gluster to the system
-iptables -A INPUT -j GLUSTER-IN
-ip6tables -A OUTPUT -j GLUSTER-OUT
-```
-
-Note: It will be necessary to limit the range to that which is provided.
-> Gluster-10 onwards, the brick ports will be randomized. A port is randomly selected within the range of base_port to max_port as defined in glusterd.vol file and then assigned to the brick. For example: if you have five bricks, you need to have at least 5 ports open within the given range of base_port and max_port. To reduce the number of open ports (for best security practices), one can lower the max_port value in the glusterd.vol file and restart glusterd to get it into effect.
-
-The other alternative is we accept all traffic from trusted source address. As currently we accept all traffic to and from a Gluster port.
-
-The Output Chain for gluster is bloated as it may have to handle outbound requests and outbound responses... 
-
 ## INPUT Chain
 * Allows all established connections (Established,Related)
 * Allows inbound https connections (443) -- if the system is not hosing a web server this should be removed 
@@ -83,3 +64,23 @@ iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 This means there can be conflict with ufw. 
 # Notes 
 VSCode connections work with the current setup so Justin may be happy
+
+## Gluster --LIKELY NOT NEEDED--
+Gluster Chains (GLUSTER-IN, GLUSTER-OUT) are created with the necessary rules to support 10 blocks on a system. (Arbitrarily Chosen)
+We can enable the Gluster rules by adding the chains to the INPUT and OUTPUT chains respectively.
+
+We provide no conditions as this is just a patchwork rule, so this will exist on all systems and can be enabled with 2 lines.
+
+```sh
+# Add Gluster to the system
+iptables -A INPUT -j GLUSTER-IN
+ip6tables -A OUTPUT -j GLUSTER-OUT
+```
+
+Note: It will be necessary to limit the range to that which is provided.
+> Gluster-10 onwards, the brick ports will be randomized. A port is randomly selected within the range of base_port to max_port as defined in glusterd.vol file and then assigned to the brick. For example: if you have five bricks, you need to have at least 5 ports open within the given range of base_port and max_port. To reduce the number of open ports (for best security practices), one can lower the max_port value in the glusterd.vol file and restart glusterd to get it into effect.
+
+The other alternative is we accept all traffic from trusted source address. As currently we accept all traffic to and from a Gluster port.
+
+The Output Chain for gluster is bloated as it may have to handle outbound requests and outbound responses... 
+

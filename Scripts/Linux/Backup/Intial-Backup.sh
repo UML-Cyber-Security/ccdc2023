@@ -92,8 +92,15 @@ mkdir /backups/configs/crontabs
 chown root:root /backups/configs/crontabs
 # Make it read-write for root but read for others
 chmod 644 /backups/configs/crontabs
+
 # Copy User Configurations 
-cp -r /var/spool/cron/crontabs /backups/configs/crontabs
+if [ -f /etc/redhat-release ]; then
+  cp -r /var/spool/cron/ /backups/configs/crontabs
+else if [ -f /etc/debian_version ]; then 
+  cp -r /var/spool/cron/crontabs /backups/configs/crontabs
+else
+  cp -r /var/cron/tabs /backups/configs/crontabs
+fi 
 
 ## Logs Directory
 echo "[+] Backing up logs directory to /backups/logs/"
