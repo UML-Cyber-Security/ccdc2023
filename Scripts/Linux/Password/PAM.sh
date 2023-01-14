@@ -5,33 +5,47 @@ if [ $EUID -ne 0 ]; then
 fi
 
 # If Debian
-apt install libpam-pwquality -y
+# If there exists this file, it is a debian based system. Use APT
+if [ -f "/etc/debian_version" ]; then
+    apt-get install libpam-pwquality -y
+elif [ -f "/etc/redhat-release" ]; then
+    yum install pam
+elif [ -f "/etc/arch-release" ]; then
+    echo "Arch, Will this come up -- probably should do fedora"
+fi
 
+cp -r /etc/pam.d /backups/configs
+
+# Seth the minimum length of a password to 14 charicters 
 if [ "$(grep 'minlen' /etc/security/pwquality.conf | wc -l)" -eq 0 ]; then
     echo "minlen = 14" >> /etc/security/pwquality.conf
 else
     sed -i "s/.*minlen.*/minlen = 9/g" /etc/security/pwquality.conf
 fi
 
-# OR dcredit = -1 ucredit = -1 ocredit = -1 lcredit = -1 
-if [ "$(grep 'minclass' /etc/security/pwquality.conf | wc -l)" -eq 0 ]; then
-    echo "minclass = 4" >> /etc/security/pwquality.conf
-else
-    sed -i "s/.*minclass.*/minclass = 4/g" /etc/security/pwquality.conf
-fi
+# Comment out as this will cause issues with random char passwds
+# # OR dcredit = -1 ucredit = -1 ocredit = -1 lcredit = -1 
+# if [ "$(grep 'minclass' /etc/security/pwquality.conf | wc -l)" -eq 0 ]; then
+#     echo "minclass = 4" >> /etc/security/pwquality.conf
+# else
+#     sed -i "s/.*minclass.*/minclass = 4/g" /etc/security/pwquality.conf
+# fi
 
+# Limits the user to 3 tries 
 if [ "$(grep 'password requisite pam_pwquality.so' /etc/pam.d/common-password | wc -l)" -eq 0 ]; then
     echo "password requisite pam_pwquality.so retry 3" >> /etc/pam.d/common-password
 else
     sed -i "s/password requisite pam_pwquality.so.*/password requisite pam_pwquality.so retry 3/g" /etc/pam.d/common-password
 fi
 
+# Locks out the user after a number of failed attempts 
 if [ "$(grep 'auth required pam_faillock.so' /etc/pam.d/common-auth | wc -l)" -eq 0 ]; then
     echo "auth required pam_faillock.so preauth silent audit deny=3 unlock_time=900" >> /etc/pam.d/common-auth
 else
     sed  -i "s/.*auth required pam_faillock.so.*/auth required pam_faillock.so preauth silent audit deny=3 unlock_time=900/g" /etc/pam.d/common-auth
 fi
  
+ # Deny access 
 if [ "$(grep 'account\s*requisite\s*pam_deny.so' /etc/pam.d/common-account | wc -l)" -eq 0 ]; then
     echo "account     requisite    pam_deny.so" >> /etc/pam.d/common-account
 else
