@@ -22,6 +22,9 @@ if __name__ == "__main__":
         disableMFA(disable_group)
     
         with open("/etc/pam.d/sshd", "a") as pLog:
-            pLog.write(f"auth [success=done default=ignore] pam_succeed_if.so user ingroup {group_name}\n")
-            
+            lines = pLog.readlines()
+            if lines[len(lines) - 1] == "":
+                pLog.write(f"auth [success=done default=ignore] pam_succeed_if.so user ingroup {group_name}\n")
+            else:
+                pLog.write(f"\nauth [success=done default=ignore] pam_succeed_if.so user ingroup {group_name}\n")
         
