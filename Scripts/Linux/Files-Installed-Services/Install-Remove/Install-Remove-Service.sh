@@ -50,6 +50,7 @@ if [ "$PKG" = "apt-get" ]; then
 
     apt-get install python3 -y
     apt-get install sudo -y
+    apt-get install libpam-google-authenticator -y
     # $PKG install ufw -y
 
     sudo apt-get purge ftp -y
