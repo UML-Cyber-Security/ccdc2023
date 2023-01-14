@@ -67,5 +67,5 @@ def run():
 
 if __name__ == "__main__":
     run()
-    system('sudo python3 disable_mfa.py')
-    system('sudo python3 enable_mfa.py')
+    #system('sudo python3 disable_mfa.py')
+    #system('sudo python3 enable_mfa.py')
