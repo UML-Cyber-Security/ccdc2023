@@ -41,12 +41,12 @@ if __name__ == "__main__":
      
     with open('/etc/pam.d/sshd', 'r') as pLog:
         original_config = pLog.readlines()
-        with open('/etc/ssh/sshd_config', 'w') as pLog:
+        with open('/etc/pam.d/sshd', 'w') as pLog_:
             for line in original_config:
                 if "@include common-auth" in line:
-                    pLog.write("#@include common-auth\n")
+                    pLog_.write("#@include common-auth\n")
                 else:
-                    pLog.write(line)
+                    pLog_.write(line)
                     
     system('sudo systemctl restart sshd.service')
     
